@@ -1,5 +1,18 @@
 import { StaticImageData } from "next/image"
 
+export interface Store {
+    id: string;
+    name: string;
+    username: string;
+    description: string;
+    email: string;
+    contact: string;
+    address: string;
+    logo: string | StaticImageData;
+    type: string;
+    category: string;
+}
+
 export interface Product {
     id: string
     name: string
@@ -10,18 +23,7 @@ export interface Product {
     category: string
     storeId: string
     inStock: boolean
-    store: {
-        id: string;
-        name: string;
-        username: string;
-        description: string;
-        email: string;
-        contact: string;
-        address: string;
-        logo: string | StaticImageData;
-        type: string;
-        category: string;
-    }    
+    store: Store
     rating: Rating[]
     createdAt: string
     updatedAt: string
