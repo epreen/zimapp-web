@@ -10,18 +10,18 @@ export interface Product {
     category: string
     storeId: string
     inStock: boolean
-    store?: {
+    store: {
         id: string;
-        name: string
-        username: string
-        description: string
-        email: string
-        contact: string
-        address: string
-        image: string | StaticImageData
-        type: string
-        category: string
-    }
+        name: string;
+        username: string;
+        description: string;
+        email: string;
+        contact: string;
+        address: string;
+        logo: string | StaticImageData;
+        type: string;
+        category: string;
+    }    
     rating: Rating[]
     createdAt: string
     updatedAt: string
