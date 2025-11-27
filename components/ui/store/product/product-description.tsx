@@ -3,7 +3,7 @@
 import {ArrowLeft} from "lucide-react"
 import Link from "next/link"
 import {FC} from "react"
-import type {Product} from "@/utils/slices/product";
+import { Product } from "@/lib/types"
 
 interface ProductDescriptionInterface {
     product: Product
