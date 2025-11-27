@@ -1,26 +1,162 @@
+/* --------------------------------------------
+   Font Imports (Poppins as Main Theme Font)
+--------------------------------------------- */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* --------------------------------------------
+   Tailwind Custom Variant for Dark Mode
+--------------------------------------------- */
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* --------------------------------------------
+   Tailwind Theme Extension (Variables Inline)
+--------------------------------------------- */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    --font-sans: var(--font-poppins);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-destructive: var(--destructive);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* --------------------------------------------
+   Root (Light Theme)
+--------------------------------------------- */
+:root {
+    --font-poppins: "Poppins", "Inter", sans-serif;
+    --radius: 0.625rem;
+
+    /* HUE SYSTEM (Core Brand Hues) */
+    --hue-brand: 278; /* navy-indigo tone */
+    --hue-secondary: 50; /* golden-yellow tone */
+    --hue-accent: 200; /* soft blue accent (optional) */
+
+    /* BRAND COLORS (in HSL) */
+    --primary: hsl(var(--hue-brand) 100% 38%);
+    --primary-foreground: hsl(var(--hue-brand) 25% 40%);
+    --secondary: hsl(var(--hue-secondary) 100% 60%);
+    --secondary-foreground: hsl(var(--hue-brand) 100% 10%);
+    --accent: hsl(var(--hue-accent) 50% 55%);
+    --accent-foreground: hsl(var(--hue-brand) 20% 15%);
+
+    /* UI SYSTEM */
+    --background: hsl(var(--hue-secondary) 100% 99%);
+    --foreground: hsl(var(--hue-secondary) 100% 10%);
+    --card: hsl(var(--hue-secondary) 100% 100%);
+    --card-foreground: hsl(var(--hue-secondary) 0% 10%);
+    --popover: hsl(var(--hue-secondary) 0% 100%);
+    --popover-foreground: hsl(var(--hue-secondary) 0% 10%);
+    --muted: hsl(var(--hue-secondary) 0% 96%);
+    --muted-foreground: hsl(var(--hue-secondary) 0% 45%);
+    --destructive: hsl(0 80% 55%);
+    --border: hsl(var(--hue-brand) 0% 85%);
+    --input: hsl(var(--hue-brand) 0% 90%);
+    --ring: hsl(var(--hue-brand) 35% 22%);
+    --sidebar: hsl(var(--hue-brand) 0% 98%);
+    --sidebar-foreground: hsl(var(--hue-brand) 0% 10%);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: hsl(var(--hue-brand) 0% 98%);
+    --sidebar-accent: var(--secondary);
+    --sidebar-accent-foreground: hsl(var(--hue-brand) 0% 15%);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* --------------------------------------------
+   Dark Theme
+--------------------------------------------- */
+.dark {
+    --background: hsl(var(--hue-brand) 30% 9%);
+    --foreground: hsl(var(--hue-brand) 50% 98%);
+    --card: hsl(var(--hue-brand) 10% 15%);
+    --card-foreground: hsl(var(--hue-brand) 10% 98%);
+    --popover: hsl(var(--hue-brand) 10% 15%);
+    --popover-foreground: hsl(var(--hue-brand) 10% 98%);
+
+    /* Brand & Secondary for Dark Mode */
+    --primary: hsl(var(--hue-brand) 100% 70%);
+    --primary-foreground: hsl(var(--hue-brand) 50% 10%);
+    --secondary: hsl(var(--hue-secondary) 95% 65%);
+    --secondary-foreground: hsl(var(--hue-secondary) 50% 10%);
+    --accent: hsl(var(--hue-accent) 50% 65%);
+    --accent-foreground: hsl(var(--hue-brand) 0% 10%);
+
+    /* System */
+    --muted: hsl(var(--hue-brand) 0% 20%);
+    --muted-foreground: hsl(var(--hue-brand) 0% 70%);
+    --destructive: hsl(10 80% 55%);
+    --border: hsl(var(--hue-brand) 0% 30%);
+    --input: hsl(var(--hue-brand) 0% 25%);
+    --ring: hsl(var(--hue-brand) 45% 70%);
+    --sidebar: hsl(var(--hue-brand) 0% 15%);
+    --sidebar-foreground: hsl(var(--hue-brand) 0% 98%);
+    --sidebar-primary: hsl(var(--hue-brand) 35% 65%);
+    --sidebar-primary-foreground: hsl(var(--hue-brand) 0% 98%);
+    --sidebar-accent: hsl(var(--hue-secondary) 90% 60%);
+    --sidebar-accent-foreground: hsl(var(--hue-brand) 0% 10%);
+}
+
+/* --------------------------------------------
+   Base Layer (Tailwind Reset + Global Styles)
+--------------------------------------------- */
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+        box-sizing: border-box;
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans;
+        font-family: var(--font-poppins);
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    a {
+        @apply text-primary hover:text-secondary transition-colors duration-300;
+    }
+}
+
+@layer components {
+    @keyframes marqueeScroll {
+        0% {
+            transform: translateX(0%);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    .video-card {
+        @apply break-inside-avoid mx-2 my-3 w-full;
+    }
+}
+
+
+*::-webkit-scrollbar {
+    display: none;
 }
