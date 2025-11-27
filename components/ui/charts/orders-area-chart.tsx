@@ -1,6 +1,14 @@
 'use client'
 
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+} from 'recharts'
 
 interface Order {
     createdAt: string | Date
@@ -11,22 +19,26 @@ interface OrdersAreaChartInterface {
 }
 
 export default function OrdersAreaChart({ allOrders }: OrdersAreaChartInterface) {
-
     // Group orders by date
-    const ordersPerDay = allOrders.reduce<Record<string, number>>(
-        (acc, order) => {
-            const date = new Date(order.createdAt).toISOString().split('T')[0]
-            acc[date] = (acc[date] || 0) + 1
-            return acc
-        },
-        {}
-    )
+    const ordersPerDay = allOrders.reduce<Record<string, number>>((acc, order) => {
+        const dateObj = new Date(order.createdAt)
+        if (Number.isNaN(dateObj.getTime())) {
+            return acc // Skip invalid dates
+        }
 
-    // Convert to array for Recharts
-    const chartData = Object.entries(ordersPerDay).map(([date, count]) => ({
-        date,
-        orders: count
-    })) as { date: string; orders: number }[]
+        const date = dateObj.toISOString().split('T')[0]
+        acc[date] = (acc[date] || 0) + 1
+
+        return acc
+    }, {})
+
+    // Convert to array and sort chronologically for Recharts
+    const chartData = Object.entries(ordersPerDay)
+        .map(([date, count]) => ({
+            date,
+            orders: count,
+        }))
+        .sort((a, b) => a.date.localeCompare(b.date))
 
     return (
         <div className="w-full max-w-4xl h-[300px] text-xs">

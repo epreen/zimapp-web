@@ -29,8 +29,8 @@ export interface Store {
         name: string;
         email: string;
         image: StaticImageData;
-        cart: CartState[];
-    }; // or type the user properly
+        cart: { productId: string; quantity: number }[];
+    };
 }
 
 interface StoreLayoutInterface {
@@ -42,14 +42,16 @@ const StoreLayout = ({ children }: StoreLayoutInterface) => {
 
     const [isSeller, setIsSeller] = useState(false)
     const [loading, setLoading] = useState(true)
-    const [storeInfo, setStoreInfo] = useState<Store>()
+    const [storeInfo, setStoreInfo] = useState<Store | null>(null)
 
     const fetchIsSeller = async () => {
-        setIsSeller(true)
-        const store = storesDummyData.find(
-            s => s.userId === dummyUserData.id
-        ) // this returns Store | undefined automatically
-        setStoreInfo(store)
+        const store = storesDummyData.find((s) => s.userId === dummyUserData.id)
+        if (store) {
+            setStoreInfo(store)
+            setIsSeller(true)
+        } else {
+            setIsSeller(false)
+        }
         setLoading(false)
     }
 
@@ -59,7 +61,7 @@ const StoreLayout = ({ children }: StoreLayoutInterface) => {
 
     return loading ? (
         <Loading />
-    ) : isSeller ? (
+    ) : isSeller && storeInfo ? (
         <div className="flex flex-col h-screen">
             <StoreNavbar />
             <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">

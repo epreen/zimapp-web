@@ -1,7 +1,7 @@
 'use client'
 
 import { Star, XIcon } from 'lucide-react';
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 
 interface RatingModalData {

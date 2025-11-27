@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import productReducer from '@/utils/slices/product'
 import cartReducer from '@/utils/slices/cart'
+import addressReducer from '@/utils/slices/address'
 import ratingReducer from '@/utils/slices/rating'
 
 export const makeStore = () => {
@@ -8,6 +9,7 @@ export const makeStore = () => {
         reducer: {
             product: productReducer,
             cart: cartReducer,
+            address: addressReducer,
             rating: ratingReducer,
         },
     })

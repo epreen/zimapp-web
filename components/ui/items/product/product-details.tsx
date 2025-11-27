@@ -2,16 +2,20 @@
 
 import { StarIcon, TagIcon, EarthIcon, CreditCardIcon, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {FC, useState} from "react";
+import { FC, useState } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import type {Product} from "@/utils/slices/product";
-import {addToCart} from "@/utils/slices/cart";
-import {RootState} from "@/lib/store";
+import type { Product, Rating } from "@/lib/types";
+import { addToCart } from "@/utils/slices/cart";
+import { RootState } from "@/lib/store";
 import Counter from "@/components/ui/controls/counter";
 
+type ProductWithRatings = Omit<Product, "rating"> & {
+    rating: Rating[]
+}
+
 interface ProductDetailsInterface {
-    product: Product
+    product: ProductWithRatings
 }
 
 const ProductDetails: FC<ProductDetailsInterface> = ({ product }) => {
@@ -24,26 +28,44 @@ const ProductDetails: FC<ProductDetailsInterface> = ({ product }) => {
 
     const router = useRouter()
 
-    const [mainImage, setMainImage] = useState(product.images[0]);
+    const productImages = Array.isArray(product.images) ? product.images : [];
+    const [mainImage, setMainImage] = useState<string | null>(
+        productImages.length > 0 ? (productImages[0] as string) : null,
+    );
 
     const addToCartHandler = () => {
         dispatch(addToCart({ productId }))
     }
 
-    const averageRating = product.rating.reduce((acc, item) => acc + item.rating, 0) / product.rating.length;
+    const averageRating =
+        product.rating.length > 0
+            ? product.rating.reduce((acc: number, item: Rating) => acc + item.rating, 0) /
+              product.rating.length
+            : 0;
 
     return (
         <div className="flex max-lg:flex-col gap-12">
             <div className="flex max-sm:flex-col-reverse gap-3">
-                <div className="flex sm:flex-col gap-3">
-                    {product.images.map((image, index) => (
-                        <div key={index} onClick={() => setMainImage(product.images[index])} className="bg-foreground/10 flex items-center justify-center size-26 rounded-lg group cursor-pointer">
-                            <Image src={image} className="group-hover:scale-103 group-active:scale-95 transition" alt="" width={45} height={45} />
-                        </div>
-                    ))}
-                </div>
+                {productImages.length > 0 && (
+                    <div className="flex sm:flex-col gap-3">
+                        {productImages.map((image, index) => (
+                            <button
+                                type="button"
+                                key={index}
+                                onClick={() => setMainImage(productImages[index] as string)}
+                                className="bg-foreground/10 flex items-center justify-center size-26 rounded-lg group cursor-pointer"
+                            >
+                                <Image src={image} className="group-hover:scale-103 group-active:scale-95 transition" alt="" width={45} height={45} />
+                            </button>
+                        ))}
+                    </div>
+                )}
                 <div className="flex justify-center items-center h-100 sm:size-113 bg-foreground/10 rounded-lg ">
-                    <Image src={mainImage} alt="" width={250} height={250} />
+                    {mainImage ? (
+                        <Image src={mainImage} alt="" width={250} height={250} />
+                    ) : (
+                        <p className="text-sm text-foreground/40">Image coming soon</p>
+                    )}
                 </div>
             </div>
             <div className="flex-1">

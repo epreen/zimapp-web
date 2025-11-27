@@ -7,6 +7,7 @@ import SectionHeading from "@/components/ui/headings/section-heading";
 import { Button } from "@/components/ui/button";
 import FilterModal from "@/components/ui/modals/filter-modal";
 import { dummyProductsData as staticProducts } from "@/data/dummy/products";
+import { RootState } from "@/lib/store";
 
 /* ---------------------------------------------------------
    Shared Hook — Sorting logic reused across all sections
@@ -65,7 +66,7 @@ export function ProductsHeading({
 --------------------------------------------------------- */
 export function LatestProducts() {
     const displayQuantity = 4;
-    const products = useSelector((state: any) => state.product.list);
+    const products = useSelector((state: RootState) => state.product.list);
     const sorted = useSortedProducts(products).slice(0, displayQuantity);
 
     return (
@@ -104,8 +105,8 @@ export function BestSelling() {
             />
 
             <div className="mt-12 xl:gap-12 grid grid-cols-2 sm:flex flex-wrap gap-6 justify-center">
-                {sortedBest.map((product, index) => (
-                    <ProductCard key={index} product={product} />
+                {sortedBest.map((product) => (
+                    <ProductCard key={product.id} product={product} />
                 ))}
             </div>
         </section>

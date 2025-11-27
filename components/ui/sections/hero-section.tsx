@@ -9,7 +9,7 @@ import CategoriesMarquee from "@/components/ui/marquee/categories-marquee";
 import { assets } from "@/data/assets";
 
 export default function HeroSection() {
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$";
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "MWK";
 
     return (
         <div className="mx-6">

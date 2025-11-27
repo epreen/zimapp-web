@@ -1,4 +1,6 @@
-export const addressDummyData = {
+import type { Address } from '@/lib/types'
+
+export const addressDummyData: Address = {
     id: "addr_1",
     userId: "user_1",
     name: "John Doe",

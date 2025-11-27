@@ -35,7 +35,7 @@ export type SortOption =
 interface SectionHeadingProps {
     title?: string;
     description?: string;
-    onDisplay: boolean;
+    onDisplay?: boolean;
     onOpenFilter?: () => void;
     onSortChange?: (option: SortOption) => void;
 }
@@ -46,8 +46,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
                                                            onDisplay = false,
                                                            onOpenFilter,
                                                            onSortChange,
-                                                       }) => {
-    return (
+                                                       }) => {    return (
         <div
             className={cn(
                 "space-y-4 sm:flex sm:space-y-0 md:mb-8",

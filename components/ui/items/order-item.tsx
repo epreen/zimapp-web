@@ -4,34 +4,22 @@ import Image from "next/image";
 import { DotIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import { Address } from "@/utils/slices/address";
 import { RootState } from "@/lib/store";
 import RatingModal from "@/components/ui/modals/rating-modal";
-import {Product} from "@/utils/slices/product";
 import Rating from "@/components/ui/rating";
+import type { Order } from "@/lib/types";
 
-export interface OrderItemInterface {
-    order: {
-        id: string;
-        status: string;
-        total: number;
-        createdAt: string;
-        address: Address;
-        orderItems: {
-            orderId: string;
-            productId: string;
-            quantity: number;
-            price: number;
-            product: Product;
-        }[];
-    };
+interface OrderItemInterface {
+    order: Order
 }
 
 const OrderItem = ({ order }: OrderItemInterface) => {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'MWK';
-    const [ratingModal, setRatingModal] = useState<any>(null);
-
+const [ratingModal, setRatingModal] = useState<{
+    orderId: string;
+    productId: string;
+} | null>(null);
     const { ratings } = useSelector((state: RootState) => state.rating);
 
     return (

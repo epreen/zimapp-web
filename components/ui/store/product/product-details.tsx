@@ -1,33 +1,55 @@
 'use client'
 
 import { StarIcon } from "lucide-react";
-import {FC, useState} from "react";
+import { FC, useState } from "react";
 import Image from "next/image";
-import type {Product} from "@/utils/slices/product";
+import type { Product, Rating } from "@/lib/types";
+
+type ProductWithRatings = Omit<Product, "rating"> & {
+    rating: Rating[]
+}
 
 interface ProductDetailsInterface {
-    product: Product
+    product: ProductWithRatings
 }
 
 const ProductDetails: FC<ProductDetailsInterface> = ({ product }) => {
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'MWK';
 
-    const [mainImage, setMainImage] = useState(product.images[0]);
+    const productImages = Array.isArray(product.images) ? product.images : [];
+    const [mainImage, setMainImage] = useState<string | null>(
+        productImages.length > 0 ? (productImages[0] as string) : null,
+    );
 
-    const averageRating = product.rating.reduce((acc, item) => acc + item.rating, 0) / product.rating.length;
+    const averageRating =
+        product.rating.length > 0
+            ? product.rating.reduce((acc: number, item: Rating) => acc + item.rating, 0) /
+              product.rating.length
+            : 0;
 
     return (
         <div className="flex max-lg:flex-col gap-12">
             <div className="flex max-sm:flex-col-reverse gap-3">
-                <div className="flex sm:flex-col gap-3">
-                    {product.images.map((image, index) => (
-                        <div key={index} onClick={() => setMainImage(product.images[index])} className="bg-foreground/10 flex items-center justify-center size-26 rounded-lg group cursor-pointer">
-                            <Image src={image} className="group-hover:scale-103 group-active:scale-95 transition" alt="" width={45} height={45} />
-                        </div>
-                    ))}
-                </div>
+                {productImages.length > 0 && (
+                    <div className="flex sm:flex-col gap-3">
+                        {productImages.map((image, index) => (
+                            <button
+                                type="button"
+                                key={index}
+                                onClick={() => setMainImage(productImages[index] as string)}
+                                className="bg-foreground/10 flex items-center justify-center size-26 rounded-lg group cursor-pointer"
+                            >
+                                <Image src={image} className="group-hover:scale-103 group-active:scale-95 transition" alt="" width={45} height={45} />
+                            </button>
+                        ))}
+                    </div>
+                )}
                 <div className="flex justify-center items-center h-100 sm:size-113 bg-foreground/10 rounded-lg ">
-                    <Image src={mainImage} alt="" width={250} height={250} />
+                    {mainImage ? (
+                        <Image src={mainImage} alt="" width={250} height={250} />
+                    ) : (
+                        <p className="text-sm text-foreground/40">Image coming soon</p>
+                    )}
                 </div>
             </div>
             <div className="flex-1">

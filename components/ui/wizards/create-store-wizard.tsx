@@ -1,16 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { JSX, useState } from "react"
 import {WizardProgress} from "@/components/ui/wizards/ui/wizard-progress-bar";
 import {Button} from "@/components/ui/button";
-import {StoreFormData} from "@/app/(protected)/hub/create-store/page";
+import { StoreFormData } from "@/lib/types";
+
+interface WizardStep {
+    (props: { data: StoreFormData; update: (values: Partial<StoreFormData>) => void }): JSX.Element;
+}
 
 interface CreateStoreWizardInterface {
-    steps: any[]
+    steps: WizardStep[]
     initialData: StoreFormData
     onFinish: (data: StoreFormData) => void
 }
-
 export function CreateStoreWizard({ steps, initialData, onFinish }: CreateStoreWizardInterface) {
     const [step, setStep] = useState(0)
     const [data, setData] = useState(initialData)
@@ -27,15 +30,22 @@ export function CreateStoreWizard({ steps, initialData, onFinish }: CreateStoreW
         setStep((s) => s - 1)
     }
 
+    if (steps.length === 0) {
+        return <div>No steps configured</div>
+    }
+
     const StepComponent = steps[step]
+
+    if (!StepComponent) {
+        return <div>Invalid step</div>
+    }
 
     return (
         <div className="space-y-6 max-w-2xl">
             <WizardProgress total={steps.length} current={step} />
 
             <div id="wizard" className="transition-all">
-                <StepComponent data={data} update={update} />
-            </div>
+                <StepComponent data={data} update={update} />            </div>
 
             <div className="flex justify-between">
                 {step > 0 && step < steps.length - 1 && (

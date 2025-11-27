@@ -5,7 +5,7 @@ import Link from 'next/link'
 interface PageTitleInterface {
     heading: string;
     text: string;
-    path: string;
+    path?: string;
     linkText?: string;
 }
 
@@ -16,7 +16,7 @@ const PageTitle = ({ heading, text, path = "/home", linkText }: PageTitleInterfa
             <div className="flex items-center gap-3">
                 <p className="text-foreground/80">{text}</p>
                 <Link href={path} className="flex items-center gap-1 text-primary dark:text-secondary text-sm">
-                    {linkText} <ArrowRightIcon size={14} />
+                    {linkText && <span>{linkText}</span>} <ArrowRightIcon size={14} />
                 </Link>
             </div>
         </div>

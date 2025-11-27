@@ -35,7 +35,7 @@ const Title = ({ title, description, visibleButton = true, href = '' }: TitlePro
                     {description}
                     {
                         visibleButton && (
-                            <Link href={'/marketplace'}>
+                            <Link href={href}>
                                 <button className='cursor-pointer text-primary/50 hover:text-primary dark:text-secondary/50 dark:hover:text-secondary flex items-center gap-1'>
                                     View more
                                     <ArrowRight size={14}/>

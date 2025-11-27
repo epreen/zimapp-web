@@ -13,8 +13,8 @@ const ThemeToggle = () => {
 
     return (
         <Button onClick={toggleTheme} className="bg-transparent border-none rounded-full">
-            <Sun className="hidden dark:block" />
-            <Moon className="block text-primary dark:hidden" />
+            <Sun className="block dark:hidden" />
+            <Moon className="hidden dark:block" />
         </Button>
     )
 }

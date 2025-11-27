@@ -2,11 +2,15 @@
 import { ArrowRight, StarIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import {FC, useState} from "react"
-import type {Product} from "@/utils/slices/product";
+import { FC, useState } from "react"
+import type { Product, Rating } from "@/lib/types"
+
+type ProductWithRatings = Omit<Product, "rating"> & {
+    rating: Rating[]
+}
 
 interface ProductDescriptionInterface {
-    product: Product
+    product: ProductWithRatings
 }
 
 const ProductDescription: FC<ProductDescriptionInterface> = ({ product }) => {

@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast" // <-- adjust this path based on your pr
 import { assets } from "@/data/assets"
 import { Input } from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea";
-import {Label} from "@radix-ui/react-menu";
+import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
 
@@ -152,7 +152,7 @@ export default function AddProductForm() {
             <div className="max-w-sm mt-6">
                 <Select
                     value={productInfo.category}
-                    onValueChange={(value) =>
+                    onValueChange={(value: string) =>
                         setProductInfo(prev => ({ ...prev, category: value }))
                     }
                 >

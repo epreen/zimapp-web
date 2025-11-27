@@ -138,7 +138,7 @@ export const dummyProductsData = [
         id: "prod_9",
         name: "Apple Wireless Earbuds",
         description: "Apple Wireless Earbuds with a sleek design. It's perfect for any room. It's made of high-quality materials and comes with a lifetime warranty.",
-        mrp: 89,
+        mrp: 89000,
         price: 59000,
         images: [product_img9],
         storeId: "seller_1",
@@ -148,8 +148,7 @@ export const dummyProductsData = [
         rating: [...dummyRatingsData,...dummyRatingsData],
         createdAt: 'Sat Jul 22 2025 14:51:25 GMT+0530 (India Standard Time)',
         updatedAt: 'Sat Jul 22 2025 14:51:25 GMT+0530 (India Standard Time)',
-    },
-    {
+    },    {
         id: "prod_10",
         name: "Apple Smart Watch",
         description: "Apple Smart Watch with a sleek design. It's perfect for any room. It's made of high-quality materials and comes with a lifetime warranty.",

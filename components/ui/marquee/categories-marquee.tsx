@@ -1,26 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
 import { categories } from "@/data/dummy/categories";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
 export default function CategoriesMarquee() {
-    const marqueeRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const el = marqueeRef.current;
-        if (!el) return;
-
-        gsap.to(el, {
-            xPercent: -50,
-            ease: "none",
-            repeat: -1,
-            duration: 30,
-        });
-    }, []);
-
     return (
         <div className="overflow-hidden w-full relative max-w-7xl mx-auto select-none group sm:my-20">
             {/* Left gradient */}

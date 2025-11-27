@@ -127,8 +127,8 @@ const AddressModal = ({ setShowAddressModal }: AddressModalInterface) => {
                     </div>
 
                     <DialogFooter>
-                        <Button type="submit" className="text-background bg-primart dark:bg-secondary">Save Address</Button>
-                    </DialogFooter>
+                        
+                    <Button type="submit" className="text-background bg-primary dark:bg-secondary">Save Address</Button>                    </DialogFooter>
                 </form>
 
                 <DialogClose asChild>

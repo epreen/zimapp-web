@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import {useRouter} from 'next/navigation'
 import AddressModal from "@/components/ui/modals/address-modal"
 import {RootState} from "@/lib/store"
+import type { Address } from '@/lib/types'
 
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
 import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem} from "@/components/ui/select"
@@ -20,23 +21,31 @@ interface OrderSummaryInterface {
     items?: any[]
 }
 
+interface Coupon {
+    code: string
+    description: string
+    discount: number
+}
+
 const OrderSummary = ({totalPrice, items}: OrderSummaryInterface) => {
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'MWK'
     const router = useRouter()
 
     const addressList = useSelector((state: RootState) => state.address.list)
 
     const [paymentMethod, setPaymentMethod] = useState('COD')
-    const [selectedAddress, setSelectedAddress] = useState<any>(null)
+    const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
     const [showAddressModal, setShowAddressModal] = useState(false)
     const [couponCodeInput, setCouponCodeInput] = useState('')
-    const [coupon, setCoupon] = useState<any>(null);
+    const [coupon, setCoupon] = useState<Coupon | null>(null);
 
-    const handleCouponCode = async (e: any) => {
+    const discountAmount = coupon ? totalPrice * (coupon.discount / 100) : 0
+
+    const handleCouponCode = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
     }
 
-    const handlePlaceOrder = async (e: any) => {
+    const handlePlaceOrder = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         router.push('/marketplace/products/orders')
     }
@@ -51,9 +60,8 @@ const OrderSummary = ({totalPrice, items}: OrderSummaryInterface) => {
             {/* Payment Methods */}
             <RadioGroup
                 value={paymentMethod}
-                onValueChange={(value) => {
-                    const index = parseInt(value, 10);
-                    setSelectedAddress(addressList[index]);
+                onValueChange={(value: string) => {
+                    setPaymentMethod(value);
                 }}
             >
                 <div className="flex gap-2 items-center">
@@ -65,11 +73,7 @@ const OrderSummary = ({totalPrice, items}: OrderSummaryInterface) => {
                     <RadioGroupItem value="STRIPE" id="STRIPE"/>
                     <Label htmlFor="STRIPE">Stripe Payment</Label>
                 </div>
-            </RadioGroup>
-
-            <Separator className="my-4"/>
-
-            {/* Address Section */}
+            </RadioGroup>            {/* Address Section */}
             <div className="py-4 text-foreground/40">
                 <p>Address</p>
 
@@ -88,8 +92,8 @@ const OrderSummary = ({totalPrice, items}: OrderSummaryInterface) => {
                     <div className="mt-2">
                         {addressList.length > 0 && (
                             <Select
-                                onValueChange={(value: any) =>
-                                    setSelectedAddress(addressList[value])
+                                onValueChange={(value: string) =>
+                                    setSelectedAddress(addressList[Number(value)])
                                 }
                             >
                                 <SelectTrigger>
@@ -97,7 +101,7 @@ const OrderSummary = ({totalPrice, items}: OrderSummaryInterface) => {
                                 </SelectTrigger>
 
                                 <SelectContent>
-                                    {addressList.map((address, index) => (
+                                    {addressList.map((address: Address, index: number) => (
                                         <SelectItem key={index} value={`${index}`}>
                                             {address.name}, {address.city}
                                         </SelectItem>
@@ -134,10 +138,7 @@ const OrderSummary = ({totalPrice, items}: OrderSummaryInterface) => {
                         {coupon && (
                             <p>
                                 -{currency}
-                                {coupon
-                                    ? (totalPrice - totalPrice * (coupon.discount / 100)).toFixed(2)
-                                    : totalPrice.toLocaleString()
-                                }
+                                {discountAmount.toFixed(2)}
                             </p>
                         )}
                     </div>
@@ -188,9 +189,7 @@ const OrderSummary = ({totalPrice, items}: OrderSummaryInterface) => {
 
                 <p className="font-medium text-right">
                     {currency}
-                    {coupon
-                        ? (totalPrice - (coupon.discount / 100 * totalPrice)).toFixed(2)
-                        : totalPrice.toLocaleString()}
+                    {coupon ? (totalPrice - discountAmount).toFixed(2) : totalPrice.toLocaleString()}
                 </p>
             </div>
 

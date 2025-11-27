@@ -22,10 +22,12 @@ const Counter = ({ productId }: CounterInterface) => {
         dispatch(removeFromCart({ productId }))
     }
 
+    const quantity = cartItems[productId] ?? 0;
+
     return (
         <div className="inline-flex items-center gap-1 sm:gap-3 px-3 py-1 rounded border border-foreground/20 max-sm:text-sm text-foreground/60">
             <button onClick={removeFromCartHandler} className="p-1 select-none">-</button>
-            <p className="p-1">{cartItems[productId]}</p>
+            <p className="p-1">{quantity}</p>
             <button onClick={addToCartHandler} className="p-1 select-none">+</button>
         </div>
     )

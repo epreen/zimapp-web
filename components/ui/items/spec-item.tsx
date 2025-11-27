@@ -9,6 +9,30 @@ export interface Spec {
     accent: string; // hex / rgb / tailwind variable
 }
 
+const HEX_COLOR_REGEX = /^#([\da-f]{3}){1,2}$/i
+
+const withOpacity = (color: string, alpha: number) => {
+    if (!HEX_COLOR_REGEX.test(color.trim())) {
+        return color
+    }
+
+    const hex = color.replace('#', '')
+    const expandedHex =
+        hex.length === 3
+            ? hex
+                  .split('')
+                  .map(char => char + char)
+                  .join('')
+            : hex
+
+    const bigint = parseInt(expandedHex, 16)
+    const r = (bigint >> 16) & 255
+    const g = (bigint >> 8) & 255
+    const b = bigint & 255
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
 export const SpecItem = forwardRef<
     HTMLDivElement,
     { spec: Spec }
@@ -21,8 +45,8 @@ export const SpecItem = forwardRef<
             className="relative h-44 px-8 flex flex-col items-center justify-center w-full text-center border rounded-lg group"
             style={{
                 ["--accent" as string]: spec.accent,
-                backgroundColor: spec.accent + 10,
-                borderColor: spec.accent + 30
+                backgroundColor: withOpacity(spec.accent, 0.08),
+                borderColor: withOpacity(spec.accent, 0.3)
             }}
         >
             <CardHeader className="mt-8 flex items-center justify-center w-full">

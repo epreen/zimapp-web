@@ -6,9 +6,8 @@ interface SelectionGridProps {
     label: string
     options: string[]
     active: string
-    onSelect: (value: any) => void
+    onSelect: (value: string) => void
 }
-
 export function SelectionGrid({ label, options, active, onSelect }: SelectionGridProps) {
     return (
         <div className="space-y-2">
@@ -20,6 +19,15 @@ export function SelectionGrid({ label, options, active, onSelect }: SelectionGri
                         key={option}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => onSelect(option)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                onSelect(option);
+                            }
+                        }}
+                        tabIndex={0}
+                        role="button"
+                        aria-pressed={active === option}
                         className={`
               p-4 rounded-xl border cursor-pointer text-center
               ${active === option
@@ -28,8 +36,7 @@ export function SelectionGrid({ label, options, active, onSelect }: SelectionGri
             `}
                     >
                         {option}
-                    </motion.div>
-                ))}
+                    </motion.div>                ))}
             </div>
         </div>
     )

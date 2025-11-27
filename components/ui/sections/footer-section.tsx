@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { ComponentType } from "react";
 
 interface FooterSectionInterface {
     title: string;
     links: {
         label: string;
         href: string;
-        icon?: any;
-    }[];
+        icon?: ComponentType<{ className?: string }>;
+     }[];
 }
 
 export const FooterSection = ({ title, links }: FooterSectionInterface) => (

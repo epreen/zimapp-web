@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import gsap from "gsap";
 
 const Newsletter = () => {
     const containerRef = useRef<HTMLDivElement>(null);
