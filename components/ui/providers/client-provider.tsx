@@ -1,14 +1,16 @@
 "use client";
-import { ReactNode, useEffect, useState } from "react";
 
-export default function ClientOnly({ children }: { children: ReactNode }) {
-    const [mounted, setMounted] = useState(false);
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { ReactNode } from "react";
+import { useAuth } from "@clerk/nextjs";
 
-    useEffect(() => {
-        const t = setTimeout(() => setMounted(true), 0);
-        return () => clearTimeout(t);
-    }, []);
+if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
+    throw new Error('Missing NEXT_PUBLIC_CONVEX_URL in your .env file')
+  }
+  
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL)
 
-    if (!mounted) return null;
-    return <>{children}</>;
+export function ConvexClientProvider({ children }: { children: ReactNode }) {
+  return <ConvexProviderWithClerk client={convex} useAuth={useAuth}>{children}</ConvexProviderWithClerk>;
 }

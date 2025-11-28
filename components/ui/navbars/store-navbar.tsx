@@ -1,6 +1,5 @@
 'use client'
 import Link from "next/link"
-import React from "react";
 import ThemeToggle from "@/components/ui/controls/theme-toggle";
 
 const StoreNavbar = () => {

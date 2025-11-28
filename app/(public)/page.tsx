@@ -5,6 +5,7 @@ import {BestSelling, LatestProducts} from "@/components/ui/sections/products-sec
 import SpecsSection from "@/components/ui/sections/specs-section";
 import {ourSpecsData} from "@/data/dummy/specs";
 import NewsletterSection from "@/components/ui/sections/newsletter-section";
+import { PricingSection } from "@/components/ui/sections/pricing-section";
 
 const HomePage =  () => {
     return (
@@ -13,6 +14,7 @@ const HomePage =  () => {
             <LatestProducts />
             <BestSelling />
             <SpecsSection data={ourSpecsData} />
+            <PricingSection />
             <NewsletterSection />
         </div>
     )

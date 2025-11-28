@@ -5,7 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
 import StoreProvider from "@/components/ui/providers/store-provider";
-import ClientOnly from "@/components/ui/providers/client-provider";
+import { ConvexClientProvider } from "@/components/ui/providers/client-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 
 const poppins = Poppins({
@@ -23,15 +23,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
       <ClerkProvider>
-        <html lang="en" suppressHydrationWarning>
-            <body className={cn('antialiased', poppins.variable)}>
-                <ClientOnly>
+        <ConvexClientProvider>
+            <html lang="en" suppressHydrationWarning>
+                <body className={cn('antialiased', poppins.variable)}>
                     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                         <StoreProvider>{children}</StoreProvider>
                     </ThemeProvider>
-                </ClientOnly>
-            </body>
-        </html>
+                </body>
+            </html>
+        </ConvexClientProvider>
       </ClerkProvider>
     );
 }

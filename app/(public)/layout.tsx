@@ -1,11 +1,11 @@
 import {ReactNode} from "react";
-import HomeNavbar from "@/components/ui/navbars/home-navbar";
 import Footer from "@/components/ui/footer";
+import Header from "@/components/ui/header";
 
 const PublicLayout = ({children} : {children: ReactNode}) => {
   return (
     <>
-        <HomeNavbar />
+        <Header />
         {children}
         <Footer />
     </>
