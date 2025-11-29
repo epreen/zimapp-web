@@ -7,11 +7,11 @@ import {BestSelling, LatestProducts} from "@/components/ui/sections/products-sec
 import {ourSpecsData} from "@/data/dummy/specs";
 import { PricingSection } from "@/components/ui/sections/pricing-section";
 
-const HomePage =  () => {
-    const HeroSection = dynamic(() => import("@/components/ui/sections/hero-section"), {
-        ssr: false
-    });
+const HeroSection = dynamic(() => import("@/components/ui/sections/hero-section"), {
+    ssr: false
+});
 
+const HomePage = () => {
     return (
         <div>
             <HeroSection />

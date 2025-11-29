@@ -124,8 +124,11 @@ export async function checkUploadLimits(
       };
     }
   } catch (err) {
-    // If Convex query fails, log and allow (or fail-safe deny depending on policy).
-    console.error("checkUploadLimits: convex query error", err);
+    return {
+      allowed: false,
+      reason: "product_limit",
+      message: "Unable to verify upload limits. Please try again.",
+    };
   }
 
   // passed checks

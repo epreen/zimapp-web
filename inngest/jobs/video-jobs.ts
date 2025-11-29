@@ -1,4 +1,6 @@
 // /inngest/jobs/processVideoUpload.ts
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { assemblyAI, openai, cohere } from "@/inngest/integrations";
 import { convex } from "@/lib/convex-client";
 
@@ -10,7 +12,7 @@ import { convex } from "@/lib/convex-client";
  * - generate metadata
  * - update Convex
  */
-export async function processVideoUpload(videoUrl: string, videoId: string, storeId?: string) {
+export async function processVideoUpload(videoUrl: string, videoId: Id<"videos">, storeId?: string) {
   // 1. transcription
   const transcript = await assemblyAI.transcribe(videoUrl);
 
@@ -25,7 +27,7 @@ export async function processVideoUpload(videoUrl: string, videoId: string, stor
 
   // 5. save to Convex (replace with your mutation)
   try {
-    await convex.mutation((api: any) => api.videos.update, {
+    await convex.mutation(api.video.update, {
       id: videoId,
       transcript,
       aiTags: tags,

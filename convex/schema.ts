@@ -29,7 +29,7 @@ export default defineSchema({
   products: defineTable({
     storeId: v.id("stores"),
     name: v.string(),
-    description: v.string(),
+    description: v.string(),  
     optimizedDescription: v.optional(v.string()),
     price: v.number(),
     images: v.array(v.string()),
