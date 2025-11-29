@@ -1,5 +1,5 @@
 // /lib/tier-utils.ts
-import type { Auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server"; // ✅ import as value
 import { convex } from "@/lib/convex-client";
 import { api } from "@/convex/_generated/api";
 import {
@@ -7,7 +7,6 @@ import {
   PLAN_LIMITS,
   PlanName,
   FeatureName,
-  FEATURES,
 } from "@/lib/tier-config";
 
 export interface UploadValidationResult {
@@ -21,11 +20,11 @@ export interface UploadValidationResult {
 /**
  * Detect plan from Clerk Auth object using auth.has().
  */
-export function getPlanFromAuth(auth: Auth): PlanName {
-  const has = auth?.has;
+export async function getPlanFromAuth(): Promise<PlanName> {
+  const authObj = await auth(); // await the promise
+  const has = authObj?.has;
   if (!has) return "free";
 
-  // Order matters: check highest plans first
   if (has({ plan: "enterprise" })) return "enterprise";
   if (has({ plan: "business" })) return "business";
   if (has({ plan: "premium" })) return "premium";
@@ -37,12 +36,12 @@ export function getPlanFromAuth(auth: Auth): PlanName {
  * Check if a user has access to a feature using Clerk's feature flags (auth.has)
  * or fallback to plan mapping.
  */
-export function checkFeatureAccess(auth: Auth, feature: FeatureName): boolean {
-  const has = auth?.has;
+export async function checkFeatureAccess(feature: FeatureName): Promise<boolean> {
+  const authObj = await auth();
+  const has = authObj?.has;
   if (has && has({ feature })) return true;
 
-  // fallback using plan features
-  const plan = getPlanFromAuth(auth);
+  const plan = await getPlanFromAuth();
   return PLAN_FEATURES[plan].includes(feature);
 }
 
@@ -57,7 +56,6 @@ export function getPlanFeatures(plan: PlanName): FeatureName[] {
  * Minimum plan that includes a given feature (based on the mapping)
  */
 export function getMinimumPlanForFeature(feature: FeatureName): PlanName {
-  // check plans in ascending order of privilege
   const order: PlanName[] = ["free", "standard", "premium", "business", "enterprise"];
   for (const p of order) {
     if (PLAN_FEATURES[p].includes(feature)) return p;
@@ -67,22 +65,16 @@ export function getMinimumPlanForFeature(feature: FeatureName): PlanName {
 
 /**
  * Validate upload against plan limits:
- * - file size
- * - duration
- * - project counts (number of product uploads or video ads as example)
- *
- * This function uses Convex queries for counting existing objects.
  */
 export async function checkUploadLimits(
-  auth: Auth,
   userId: string,
   fileSize: number,
   durationSec?: number
 ): Promise<UploadValidationResult> {
-  const plan = getPlanFromAuth(auth);
+  const plan = await getPlanFromAuth(); // ✅ await here
   const limits = PLAN_LIMITS[plan];
 
-  // Check file size
+  // File size check
   if (limits.maxFileSize !== null && fileSize > limits.maxFileSize) {
     return {
       allowed: false,
@@ -92,7 +84,7 @@ export async function checkUploadLimits(
     };
   }
 
-  // Check duration (if provided)
+  // Duration check
   if (typeof durationSec === "number" && limits.maxDuration !== null && durationSec > limits.maxDuration) {
     return {
       allowed: false,
@@ -102,11 +94,8 @@ export async function checkUploadLimits(
     };
   }
 
-  // Project/product count checks: try to call Convex query that returns count.
+  // Project/product count check
   try {
-    // Replace these with your actual convex query names. Example:
-    // const productCount = await convex.query(api.products.countByOwner, { ownerId: userId });
-    // We use generic placeholder names; update to match your convex schema.
     const productCountQuery = (api as any)?.products?.countByOwner;
     let productCount = null;
     if (productCountQuery) {
@@ -131,6 +120,5 @@ export async function checkUploadLimits(
     };
   }
 
-  // passed checks
   return { allowed: true };
 }
