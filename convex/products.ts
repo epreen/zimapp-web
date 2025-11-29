@@ -44,3 +44,56 @@ export const update = mutation({
         });
     },
 });
+
+export const retrieve = query({
+  args: {
+    userId: v.string(),
+    paginationOpts: v.optional(
+      v.object({
+        numItems: v.number(),
+        cursor: v.optional(v.string()),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const numItems = args.paginationOpts?.numItems ?? 20;
+
+    // Use index for fast filtering by userId
+    // order("desc") sorts by _creationTime descending (newest first)
+    // Filter out soft-deleted projects
+    const query = ctx.db
+      .query("products")
+      .order("desc");
+
+    // Built-in pagination with cursor support
+    return await query.paginate({
+      numItems,
+      cursor: args.paginationOpts?.cursor ?? null,
+    });
+  },
+});
+
+export const retrieveByStore = query({
+  args: {
+    storeId: v.id("stores"), // <--- add this
+    paginationOpts: v.optional(
+      v.object({
+        numItems: v.number(),
+        cursor: v.optional(v.string()),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const numItems = args.paginationOpts?.numItems ?? 20;
+
+    const query = ctx.db
+      .query("products")
+      .withIndex("byStoreId", (q) => q.eq("storeId", args.storeId))
+      .order("desc");
+
+    return await query.paginate({
+      numItems,
+      cursor: args.paginationOpts?.cursor ?? null,
+    });
+  },
+});

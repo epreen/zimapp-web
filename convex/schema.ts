@@ -12,7 +12,9 @@ export default defineSchema({
     preferences: v.optional(v.array(v.string())),
     aiPersona: v.optional(v.string()),
     createdAt: v.number(),
-  }),
+  }).index("byEmail", ["email"])
+    .index("byRole", ["role"])
+    .index("byCreatedAt", ["createdAt"]),
 
   stores: defineTable({
     userId: v.id("users"),
@@ -24,7 +26,10 @@ export default defineSchema({
     verificationStatus: v.string(), // "pending" | "verified" | "rejected"
     aiHealthScore: v.optional(v.number()),
     createdAt: v.number(),
-  }),
+  }).index("byUserId", ["userId"])
+    .index("byCategory", ["category"])
+    .index("byVerificationStatus", ["verificationStatus"])
+    .index("byCreatedAt", ["createdAt"]),
 
   products: defineTable({
     storeId: v.id("stores"),
@@ -35,10 +40,14 @@ export default defineSchema({
     images: v.array(v.string()),
     aiKeywords: v.optional(v.array(v.string())),
     aiCategory: v.optional(v.string()),
+    rating: v.optional(v.array(v.number())),
     engagementScore: v.optional(v.number()),
     moderationStatus: v.string(), // "approved" | "pending" | "rejected"
     createdAt: v.number(),
-  }),
+  }).index("byStoreId", ["storeId"])
+    .index("byModerationStatus", ["moderationStatus"])
+    .index("byPrice", ["price"])
+    .index("byCreatedAt", ["createdAt"]),
 
   videos: defineTable({
     storeId: v.id("stores"),
@@ -48,7 +57,9 @@ export default defineSchema({
     engagementScore: v.optional(v.number()),
     moderationStatus: v.string(),
     createdAt: v.number(),
-  }),
+  }).index("byStoreId", ["storeId"])
+    .index("byModerationStatus", ["moderationStatus"])
+    .index("byCreatedAt", ["createdAt"]),
 
   ratings: defineTable({
     productId: v.id("products"),
@@ -56,7 +67,9 @@ export default defineSchema({
     rating: v.number(),
     review: v.string(),
     createdAt: v.number(),
-  }),
+  }).index("byProductId", ["productId"])
+    .index("byUserId", ["userId"])
+    .index("byCreatedAt", ["createdAt"]),
 
   coupons: defineTable({
     code: v.string(),
@@ -64,7 +77,8 @@ export default defineSchema({
     description: v.string(),
     expiresAt: v.number(),
     aiTargetAudience: v.optional(v.array(v.string())),
-  }),
+  }).index("byCode", ["code"])
+    .index("byExpiresAt", ["expiresAt"]),
 
   messages: defineTable({
     conversationId: v.string(),
@@ -73,7 +87,10 @@ export default defineSchema({
     message: v.string(),
     isAI: v.boolean(),
     createdAt: v.number(),
-  }),
+  }).index("byConversationId", ["conversationId"])
+    .index("bySenderId", ["senderId"])
+    .index("byReceiverId", ["receiverId"])
+    .index("byCreatedAt", ["createdAt"]),
 
   moderationLogs: defineTable({
     entity: v.string(), // product or video
@@ -81,5 +98,8 @@ export default defineSchema({
     issues: v.array(v.string()),
     status: v.string(),
     createdAt: v.number(),
-  }),
+  }).index("byEntity", ["entity"])
+    .index("byEntityId", ["entityId"])
+    .index("byStatus", ["status"])
+    .index("byCreatedAt", ["createdAt"]),
 });
