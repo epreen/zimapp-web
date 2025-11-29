@@ -21,7 +21,7 @@ export default function HeroSection() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     className="relative flex-1 flex flex-col rounded-3xl overflow-hidden
-                     bg-primary/10 dark:bg-secondary/30 xl:min-h-100"
+                     bg-primary/10 dark:bg-secondary/10 xl:min-h-100"
                 >
                     <div className="p-5 sm:p-16">
                         <Badge className="inline-flex items-center gap-3
