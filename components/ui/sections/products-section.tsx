@@ -1,30 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Preloaded, usePreloadedQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { StaticImageData } from "next/image";
+import type { Preloaded } from "convex/react";
+import { usePreloadedQuery } from "convex/react";
+import type { api } from "@/convex/_generated/api";
 import SectionHeading from "@/components/ui/headings/section-heading";
 import { Button } from "@/components/ui/button";
 import FilterModal from "@/components/ui/modals/filter-modal";
-import ProductCard from "../cards/product-card";
+import ProductCard from "@/components/ui/cards/product-card";
 
 /* -----------------------------
    Types
 ----------------------------- */
-interface RatingItem {
-  rating: number;
-}
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  images: (string | StaticImageData)[];
-  rating?: RatingItem[];
-  createdAt: number;
-  category?: string;
-}
+type ProductItem = ReturnType<typeof usePreloaded>[number];
 
 interface ProductsListProps {
     products: Preloaded<typeof api.products.retrieve>;
@@ -34,40 +23,31 @@ interface ProductsListProps {
    useSortedProducts Hook
 ----------------------------- */
 export function useSortedProducts({ products }: ProductsListProps) {
-    const productArray = unwrapPreloaded(products);
+    const result = usePreloaded(products);
   
     return useMemo(() => {
-      return [...productArray].sort((a, b) => b.createdAt - a.createdAt);
-    }, [productArray]);
-}  
+      return result
+        .slice()
+        .sort((a, b) => b.createdAt - a.createdAt);
+    }, [result]);
+}
 
 // Only unwrap Preloaded queries
-function unwrapPreloaded(
+function usePreloaded(
     preloaded: Preloaded<typeof api.products.retrieve>
-  ): Product[] {
-    const result = usePreloadedQuery(preloaded).page ?? [];
-    return result.map((p) => ({
-      id: p._id,
-      name: p.optimizedDescription ?? "Unnamed Product",
-      price: p.price ?? 0,
-      images: p.images ?? [],
-      rating: p.rating?.map((r) => ({ rating: r })),
-      createdAt: p._creationTime,
-      category: p.aiCategory ?? "uncategorized",
-    }));
+  ) {
+    return usePreloadedQuery(preloaded).page ?? [];
 }  
 
 
 /* -----------------------------
    ProductsGrid Component
 ----------------------------- */
-export function ProductsGrid({ items }: { items: Product[] | Preloaded<typeof api.products.retrieve> }) {
-    const productArray = Array.isArray(items) ? items : unwrapPreloaded(items);
-  
+export function ProductsGrid({ items }: { items: ProductItem[] }) {
     return (
       <div className="mt-12 grid grid-cols-2 sm:flex flex-wrap gap-6 justify-center">
-        {productArray.map((p) => (
-            <ProductCard key={p.id} product={p} />
+        {items.map((p) => (
+          <ProductCard key={p._id} product={p} />
         ))}
       </div>
     );
@@ -109,7 +89,7 @@ export function LatestProducts({ products }: ProductsListProps) {
       <section className="px-6 max-w-6xl mx-auto">
         <ProductsHeading
           title="Latest Products"
-          description={`Showing ${sorted.length} of ${unwrapPreloaded(products).length} products`}
+          description={`Showing ${sorted.length} of ${usePreloaded(products).length} products`}
           showFilter={false}
         />
         <ProductsGrid items={sorted} />
@@ -119,7 +99,7 @@ export function LatestProducts({ products }: ProductsListProps) {
   
   export function BestSelling({ products }: ProductsListProps) {
     const sortedBest = useMemo(() => {
-      return [...unwrapPreloaded(products)]
+      return [...usePreloaded(products)]
         .sort((a, b) => (b.rating?.length ?? 0) - (a.rating?.length ?? 0))
         .slice(0, 8);
     }, [products]);
@@ -128,7 +108,7 @@ export function LatestProducts({ products }: ProductsListProps) {
       <section className="px-6 my-30 max-w-6xl mx-auto">
         <ProductsHeading
           title="Best Selling"
-          description={`Showing ${sortedBest.length} of ${unwrapPreloaded(products).length} products`}
+          description={`Showing ${sortedBest.length} of ${usePreloaded(products).length} products`}
         />
         <ProductsGrid items={sortedBest} />
       </section>
@@ -147,9 +127,9 @@ export function ProductsSection({
 
   const filteredProducts =
   category.toLowerCase() === "all"
-    ? unwrapPreloaded(products)
-    : unwrapPreloaded(products).filter(
-        (p: Product) => p.category?.toLowerCase() === category.toLowerCase()
+    ? usePreloaded(products)
+    : usePreloaded(products).filter(
+        (p) => p.aiCategory?.toLowerCase() === category.toLowerCase()
       );
 
   return (

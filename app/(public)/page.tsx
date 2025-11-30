@@ -1,27 +1,11 @@
-"use client";
+import { preloadQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
+import HomePageClient from "./home-client";
 
-import dynamic from "next/dynamic";
-import SpecsSection from "@/components/ui/sections/specs-section";
-import NewsletterSection from "@/components/ui/sections/newsletter-section";
-import {BestSelling, LatestProducts} from "@/components/ui/sections/products-section";
-import {ourSpecsData} from "@/data/dummy/specs";
-import { PricingSection } from "@/components/ui/sections/pricing-section";
+export default async function Page() {
+  const products = await preloadQuery(api.products.retrieve, {
+    paginationOpts: { numItems: 100 },
+  });
 
-const HeroSection = dynamic(() => import("@/components/ui/sections/hero-section"), {
-    ssr: false
-});
-
-const HomePage = () => {
-    return (
-        <div>
-            <HeroSection />
-            <LatestProducts />
-            <BestSelling />
-            <SpecsSection data={ourSpecsData} />
-            <PricingSection />
-            <NewsletterSection />
-        </div>
-    )
+  return <HomePageClient products={products} />;
 }
-
-export default HomePage;

@@ -47,7 +47,6 @@ export const update = mutation({
 
 export const retrieve = query({
   args: {
-    userId: v.string(),
     paginationOpts: v.optional(
       v.object({
         numItems: v.number(),
@@ -63,6 +62,7 @@ export const retrieve = query({
     // Filter out soft-deleted projects
     const query = ctx.db
       .query("products")
+      .withIndex("byCreatedAt")
       .order("desc");
 
     // Built-in pagination with cursor support
@@ -96,4 +96,4 @@ export const retrieveByStore = query({
       cursor: args.paginationOpts?.cursor ?? null,
     });
   },
-});
+}); 

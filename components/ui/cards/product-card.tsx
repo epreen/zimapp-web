@@ -1,25 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { StarIcon } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
-interface RatingItem {
-    rating: number;
-}
-
-interface Product {
-    id: string | number;
-    name: string;
-    price: number | string;
-    images: (string | StaticImageData)[];
-    rating?: RatingItem[];
-}
+import type { Doc } from "@/convex/_generated/dataModel";
 
 interface ProductCardProps {
-    product: Product;
+    product: Doc<"products">;
     className?: string;
 }
 
@@ -28,13 +17,13 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   
     const avgRating = product.rating?.length
       ? Math.round(
-          product.rating.reduce((acc, curr) => acc + curr.rating, 0) /
+          product.rating.reduce((acc, curr) => acc + curr, 0) /
             product.rating.length
         )
       : 0;
   
     return (
-      <Link href={`/marketplace/products/${product.id}`}>
+      <Link href={`/marketplace/products/${product._id}`}>
         <motion.div
           whileHover={{ scale: 1.03 }}
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
