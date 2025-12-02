@@ -1,10 +1,5 @@
-// /lib/feature-job-map.ts
 import { FeatureName } from "@/lib/tier-config";
 
-/**
- * Job names — these correspond to the inngest functions or background tasks you will create.
- * Keep values stable: they are used in logs, retries and in FEATURE_TO_JOB_MAP.
- */
 export const JOBS = {
   GENERATE_LISTING_ENHANCEMENT: "generateListingEnhancement",
   PROCESS_VIDEO_UPLOAD: "processVideoUpload",
@@ -22,21 +17,31 @@ export const JOBS = {
 
 export type JobName = (typeof JOBS)[keyof typeof JOBS];
 
-/**
- * Map features to the job(s) that implement them.
- */
 export const FEATURE_TO_JOB_MAP: Record<FeatureName, JobName[]> = {
-  ai_moderation: [JOBS.PROCESS_VIDEO_UPLOAD], // moderation happens as part of video pipeline
+  // original tier-config features
+  business_verification: [JOBS.VERIFY_BUSINESS],
+  video_promo_upload: [JOBS.PROCESS_VIDEO_UPLOAD],
+  featured_listing: [],
+  homepage_spotlight: [],
+  priority_search: [],
+  sponsored_posts: [],
+  auto_responder: [JOBS.SEND_AUTO_RESPONDER],
+  basic_analytics: [JOBS.GENERATE_ANALYTICS_REPORT],
+  advanced_analytics: [JOBS.GENERATE_ANALYTICS_REPORT],
+  customer_insights: [JOBS.GENERATE_ANALYTICS_REPORT],
+  promo_push: [JOBS.SEND_PROMO_PUSH],
+  boosted_product_slots: [],
+  content_upload_assistance: [],
+
+  // Option B expanded features
+  ai_moderation: [JOBS.PROCESS_VIDEO_UPLOAD],
   listing_enhancer_basic: [JOBS.GENERATE_LISTING_ENHANCEMENT],
   listing_enhancer_full: [JOBS.GENERATE_LISTING_ENHANCEMENT],
   video_auto_optimization: [JOBS.PROCESS_VIDEO_UPLOAD],
-  auto_responder: [JOBS.SEND_AUTO_RESPONDER],
-  analytics_basic: [JOBS.GENERATE_ANALYTICS_REPORT],
   analytics_monthly: [JOBS.GENERATE_ANALYTICS_REPORT],
   analytics_biweekly: [JOBS.GENERATE_ANALYTICS_REPORT],
   analytics_weekly_deep: [JOBS.GENERATE_ANALYTICS_REPORT],
   smart_recommendations: [JOBS.RUN_RECOMMENDATION_JOB],
-  business_verification: [JOBS.VERIFY_BUSINESS],
   promo_auto_generator: [JOBS.GENERATE_PROMO_BANNER],
   smart_coupons: [JOBS.APPLY_SMART_COUPONS],
   smart_coupons_advanced: [JOBS.APPLY_SMART_COUPONS],
@@ -47,14 +52,17 @@ export const FEATURE_TO_JOB_MAP: Record<FeatureName, JobName[]> = {
   sponsored_ranking_high: [JOBS.BOOST_RANKING],
   sponsored_ranking_top: [JOBS.BOOST_RANKING],
   sponsored_ranking_dedicated: [JOBS.BOOST_RANKING],
+
   product_upload_limit_10: [],
   product_upload_limit_30: [],
   product_upload_limit_60: [],
   product_upload_unlimited: [],
+
   promo_push_1: [JOBS.SEND_PROMO_PUSH],
   promo_push_3: [JOBS.SEND_PROMO_PUSH],
   promo_push_5: [JOBS.SEND_PROMO_PUSH],
   promo_push_custom: [JOBS.SEND_PROMO_PUSH],
+
   dedicated_account_manager: [],
   priority_support: [],
 };

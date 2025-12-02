@@ -1,10 +1,15 @@
-// /lib/tier-config.ts
-export type PlanName = "basic" | "standard" | "premium" | "business" | "enterprise";
+export type PlanName =
+  | "basic"
+  | "standard"
+  | "premium"
+  | "business"
+  | "enterprise";
 
 /**
- * Feature constants
+ * Unified feature list — all features used across the entire system.
  */
 export const FEATURES = {
+  // original tier-config features
   BUSINESS_VERIFICATION: "business_verification",
   VIDEO_PROMO_UPLOAD: "video_promo_upload",
   FEATURED_LISTING: "featured_listing",
@@ -18,6 +23,39 @@ export const FEATURES = {
   PROMO_PUSH: "promo_push",
   BOOSTED_PRODUCT_SLOTS: "boosted_product_slots",
   CONTENT_UPLOAD_ASSISTANCE: "content_upload_assistance",
+
+  // features used in feature-job-map
+  AI_MODERATION: "ai_moderation",
+  LISTING_ENHANCER_BASIC: "listing_enhancer_basic",
+  LISTING_ENHANCER_FULL: "listing_enhancer_full",
+  VIDEO_AUTO_OPTIMIZATION: "video_auto_optimization",
+  ANALYTICS_MONTHLY: "analytics_monthly",
+  ANALYTICS_BIWEEKLY: "analytics_biweekly",
+  ANALYTICS_WEEKLY_DEEP: "analytics_weekly_deep",
+  SMART_RECOMMENDATIONS: "smart_recommendations",
+  PROMO_AUTO_GENERATOR: "promo_auto_generator",
+  SMART_COUPONS: "smart_coupons",
+  SMART_COUPONS_ADVANCED: "smart_coupons_advanced",
+  SELLER_ONBOARDING_COACH: "seller_onboarding_coach",
+  AI_VIDEO_GENERATION: "ai_video_generation",
+  AI_VIDEO_GENERATION_CUSTOM: "ai_video_generation_custom",
+  SPONSORED_RANKING_MEDIUM: "sponsored_ranking_medium",
+  SPONSORED_RANKING_HIGH: "sponsored_ranking_high",
+  SPONSORED_RANKING_TOP: "sponsored_ranking_top",
+  SPONSORED_RANKING_DEDICATED: "sponsored_ranking_dedicated",
+
+  PRODUCT_UPLOAD_LIMIT_10: "product_upload_limit_10",
+  PRODUCT_UPLOAD_LIMIT_30: "product_upload_limit_30",
+  PRODUCT_UPLOAD_LIMIT_60: "product_upload_limit_60",
+  PRODUCT_UPLOAD_UNLIMITED: "product_upload_unlimited",
+
+  PROMO_PUSH_1: "promo_push_1",
+  PROMO_PUSH_3: "promo_push_3",
+  PROMO_PUSH_5: "promo_push_5",
+  PROMO_PUSH_CUSTOM: "promo_push_custom",
+
+  DEDICATED_ACCOUNT_MANAGER: "dedicated_account_manager",
+  PRIORITY_SUPPORT: "priority_support",
 } as const;
 
 export type FeatureName = (typeof FEATURES)[keyof typeof FEATURES];
