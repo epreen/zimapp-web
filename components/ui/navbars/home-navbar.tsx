@@ -9,8 +9,8 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Menu, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import ThemeToggle from "@/components/ui/controls/theme-toggle";
-import { useSelector } from "react-redux";
-import { selectCartTotal } from "@/utils/slices/cart";
+// import { useSelector } from "react-redux";
+// import { selectCartTotal } from "@/utils/slices/cart";
 
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import { ManageStoresInline } from "@/components/ui/modals/manage-stores-modal"; // inline version of ManageStores
@@ -18,7 +18,7 @@ import { FaStore } from "react-icons/fa6";
 
 const HomeNavbar = () => {
     const navRef = useRef<HTMLDivElement>(null);
-    const cartCount = useSelector(selectCartTotal);
+    // const cartCount = useSelector(selectCartTotal);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
