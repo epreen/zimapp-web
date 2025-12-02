@@ -102,14 +102,14 @@ export async function checkUploadLimits(
       productCount = await convex.query(productCountQuery, { ownerId: userId });
     }
 
-    const projectLimit = limits.maxProjects;
-    if (projectLimit !== null && typeof productCount === "number" && productCount >= projectLimit) {
+    const productLimit = limits.maxProducts;
+    if (productLimit !== null && typeof productCount === "number" && productCount >= productLimit) {
       return {
         allowed: false,
         reason: "product_limit",
         message: `You have reached your project/product limit for the ${plan} plan.`,
         currentCount: productCount,
-        limit: projectLimit,
+        limit: productLimit,
       };
     }
   } catch (err) {

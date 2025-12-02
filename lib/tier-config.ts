@@ -1,5 +1,5 @@
 export type PlanName =
-  | "basic"
+  | "free"
   | "standard"
   | "premium"
   | "business"
@@ -67,7 +67,7 @@ export interface PlanLimits {
 }
 
 export const PLAN_LIMITS: Record<PlanName, PlanLimits> = {
-  basic: { maxProducts: 10, maxFileSize: 50 * 1024 * 1024, maxDuration: 300 },
+  free: { maxProducts: 10, maxFileSize: 50 * 1024 * 1024, maxDuration: 300 },
   standard: { maxProducts: 30, maxFileSize: 200 * 1024 * 1024, maxDuration: 600 },
   premium: { maxProducts: 60, maxFileSize: 500 * 1024 * 1024, maxDuration: 900 },
   business: { maxProducts: null, maxFileSize: 1 * 1024 * 1024 * 1024, maxDuration: 1200 },
@@ -75,7 +75,7 @@ export const PLAN_LIMITS: Record<PlanName, PlanLimits> = {
 };
 
 export const PLAN_FEATURES: Record<PlanName, FeatureName[]> = {
-  basic: [
+  free: [
     FEATURES.BASIC_ANALYTICS,
     FEATURES.BOOSTED_PRODUCT_SLOTS,
     FEATURES.CONTENT_UPLOAD_ASSISTANCE,
@@ -125,7 +125,7 @@ export const PLAN_FEATURES: Record<PlanName, FeatureName[]> = {
 };
 
 export const PLAN_NAMES: Record<PlanName, string> = {
-  basic: "Basic",
+  free: "Basic",
   standard: "Standard",
   premium: "Premium",
   business: "Business",
