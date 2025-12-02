@@ -8,7 +8,6 @@ import { ALLOWED_IMAGE_TYPES } from "@/lib/constants";
 import { PLAN_LIMITS } from "@/lib/tier-config";
 import { apiError } from "@/lib/api-utils";
 import { inngest } from "@/inngest/client";
-import type { Id } from "@/convex/_generated/dataModel";
 
 export async function POST(req: Request) {
   try {
@@ -58,7 +57,7 @@ export async function POST(req: Request) {
 
     // Insert store into Convex
     const storeData = {
-      userId: userId as unknown as Id<"users">, // cast to Convex Id
+      userId: userId, // cast to Convex Id
       name: body.name,
       description: body.description,
       category: body.category,
