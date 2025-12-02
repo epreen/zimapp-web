@@ -3,8 +3,9 @@
 --------------------------------------------- */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-@import "tailwindcss";
+@import 'tailwindcss';
 @import "tw-animate-css";
+@import '@clerk/themes/shadcn.css';
 
 /* --------------------------------------------
    Tailwind Custom Variant for Dark Mode
@@ -47,6 +48,8 @@
     --hue-secondary: 50; /* golden-yellow tone */
     --hue-accent: 200; /* soft blue accent (optional) */
 
+    --radial-gradient-hue: 278; /* navy-indigo tone */
+
     /* BRAND COLORS (in HSL) */
     --primary: hsl(var(--hue-brand) 100%, 38%);
     --billing-primary: hsl(var(--hue-brand) 100%, 38%);
@@ -81,6 +84,8 @@
    Dark Theme
 --------------------------------------------- */
 .dark {
+    --radial-gradient-hue: 50; /* golden-yellow tone */
+
     --background: hsl(var(--hue-brand) 30% 4%);
     --foreground: hsl(var(--hue-brand) 50% 98%);
     --card: hsl(var(--hue-brand) 10% 15%);
@@ -90,7 +95,7 @@
 
     /* Brand & Secondary for Dark Mode */
     --primary: hsl(var(--hue-brand) 100% 70%);
-    --billing-primary: hsl(var(--hue-secondary) 100%, 38%);
+    --billing-primary: hsl(var(--hue-secondary) 95% 65%);
     --primary-foreground: hsl(var(--hue-brand) 50% 10%);
     --secondary: hsl(var(--hue-secondary) 95% 65%);
     --secondary-foreground: hsl(var(--hue-secondary) 50% 10%);
@@ -165,3 +170,30 @@
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
 }
+
+/* Mesh Background Pattern */
+.mesh-background {
+    background-color: var(--background);
+    background-image:
+      radial-gradient(at 40% 20%, hsla(var(--radial-gradient-hue), 100%, 90%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsla(var(--radial-gradient-hue), 100%, 80%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsla(var(--radial-gradient-hue), 100%, 67%, 0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsla(var(--radial-gradient-hue), 100%, 52%, 0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(var(--radial-gradient-hue), 100%, 39%, 0.2) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, hsla(var(--radial-gradient-hue), 100%, 50%, 0.3) 0px, transparent 50%);
+  }
+  
+  .mesh-background-subtle {
+    background:
+      radial-gradient(
+        circle at 20% 30%,
+        hsla(var(--radial-gradient-hue), 100%, 39%, 0.05) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 70%,
+        hsla(var(--radial-gradient-hue), 100%, 50%, 0.05) 0%,
+        transparent 50%
+      );
+  }
+  

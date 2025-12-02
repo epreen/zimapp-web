@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,15 @@ import ThemeToggle from "@/components/ui/controls/theme-toggle";
 import { useSelector } from "react-redux";
 import { selectCartTotal } from "@/utils/slices/cart";
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { ManageStoresInline } from "@/components/ui/modals/manage-stores-modal"; // inline version of ManageStores
+import { FaStore } from "react-icons/fa6";
 
 const HomeNavbar = () => {
     const navRef = useRef<HTMLDivElement>(null);
     const cartCount = useSelector(selectCartTotal);
+
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
         gsap.fromTo(
@@ -44,11 +48,10 @@ const HomeNavbar = () => {
             <div className="max-w-7xl mx-auto flex items-center justify-between py-3 px-11">
                 <Link href="/" className="flex items-center font-semibold text-2xl text-foreground">
                     <span className="text-primary dark:text-secondary">zim</span>app
-                    <span className="text-primary dark:text-secondary text-3xl">.</span>
                 </Link>
 
                 <ul className="hidden lg:flex items-center gap-8">
-                    {navLinks.map((link) => (
+                    {/* {navLinks.map((link) => (
                         <motion.li
                             key={link.name}
                             whileHover={{ scale: 1, y: -2 }}
@@ -61,36 +64,49 @@ const HomeNavbar = () => {
                                 {link.name}
                             </Link>
                         </motion.li>
-                    ))}
+                    ))} */}
                 </ul>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center gap-4 relative">
                     <ThemeToggle />
 
-                    <Link href="/marketplace/products/cart" className="relative text-sm flex items-center gap-2 text-foreground/60">
+                    {/* <Link
+                        href="/marketplace/products/cart"
+                        className="relative text-sm flex items-center gap-2 text-foreground/60"
+                    >
                         <ShoppingCart size={18} />
                         Cart
                         <span className="absolute -top-1 left-3 text-[8px] bg-background text-foreground size-3.5 rounded-full flex items-center justify-center">
                             {cartCount}
                         </span>
-                    </Link>
+                    </Link> */}
 
-                    {/* Clerk replaces ProfileMenu here */}
                     <SignedIn>
-                        <UserButton />
+                        <div className="relative">
+                            <UserButton>
+                                <UserButton.UserProfilePage label="Stores" url="manage-store" labelIcon={<FaStore />}>
+                                    <ManageStoresInline />
+                                </UserButton.UserProfilePage>
+                            </UserButton>
+                        </div>
                     </SignedIn>
 
                     <SignedOut>
-                        <SignInButton>
+                        <Link href="/sign-in">
                             <Button variant="outline" size="sm">
                                 Sign in
                             </Button>
-                        </SignInButton>
+                        </Link>
                     </SignedOut>
 
+                    {/* Mobile Sheet */}
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="lg:hidden text-foreground bg-background">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="lg:hidden text-foreground bg-background"
+                            >
                                 <Menu className="w-5 h-5" />
                             </Button>
                         </SheetTrigger>

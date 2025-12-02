@@ -4,20 +4,22 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  users: defineTable({
-    name: v.string(),
-    email: v.string(),
-    image: v.optional(v.string()),
-    role: v.string(), // "buyer" | "seller" | "admin"
+  profiles: defineTable({
+    userId: v.string(), // Clerk user ID
+    role: v.union(v.literal("buyer"), v.literal("seller")),
+    hasPaidSellerFee: v.boolean(),
+    sellerSince: v.optional(v.number()),
+    verificationStatus: v.string(), // pending | verified | rejected
+    verifiedAt: v.optional(v.number()),
     preferences: v.optional(v.array(v.string())),
     aiPersona: v.optional(v.string()),
     createdAt: v.number(),
-  }).index("byEmail", ["email"])
+  }).index("byUserId", ["userId"])
     .index("byRole", ["role"])
     .index("byCreatedAt", ["createdAt"]),
 
   stores: defineTable({
-    userId: v.id("users"),
+    userId: v.string(),
     name: v.string(),
     description: v.string(),
     logo: v.optional(v.string()),
@@ -63,7 +65,7 @@ export default defineSchema({
 
   ratings: defineTable({
     productId: v.id("products"),
-    userId: v.id("users"),
+    userId: v.string(),
     rating: v.number(),
     review: v.string(),
     createdAt: v.number(),
@@ -82,8 +84,8 @@ export default defineSchema({
 
   messages: defineTable({
     conversationId: v.string(),
-    senderId: v.id("users"),
-    receiverId: v.id("users"),
+    senderId: v.string(),
+    receiverId: v.string(),
     message: v.string(),
     isAI: v.boolean(),
     createdAt: v.number(),

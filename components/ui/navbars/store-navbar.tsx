@@ -1,8 +1,28 @@
 'use client'
 import Link from "next/link"
 import ThemeToggle from "@/components/ui/controls/theme-toggle";
+import { Id } from "@/convex/_generated/dataModel";
+import { FC } from "react";
 
-const StoreNavbar = () => {
+interface Store {
+  _id: Id<"stores">;
+  name: string;
+  description: string;
+  logo?: string;
+  category: string;
+  isActive: boolean;
+  verificationStatus: string;
+  createdAt: number;
+  _creationTime: number;
+  userId: string;
+  aiHealthScore?: number;
+}
+
+interface StoreNavbarProps {
+  stores: Store[];
+}
+
+const StoreNavbar: FC<StoreNavbarProps> = ({ stores }) => {
 
 
     return (
@@ -14,7 +34,11 @@ const StoreNavbar = () => {
                 </p>
             </Link>
             <div className="flex items-center gap-3">
-                <p>Hi, Seller</p>
+                {stores.map((store) => (
+                    <div key={store._id} className="p-2 border-b">
+                    {store.logo ? <img src={store.logo} alt={store.name} className="w-8 h-8 rounded" /> : store.name}
+                    </div>
+                ))}
                 <ThemeToggle />
             </div>
         </div>

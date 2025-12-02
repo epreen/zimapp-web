@@ -14,18 +14,18 @@ const HeroSection = dynamic(() => import("@/components/ui/sections/hero-section"
 });
 
 interface HomePageClientProps {
-    products: Preloaded<typeof api.products.retrieve>;
-  }
+  products: Preloaded<typeof api.products.retrieve>;
+}
   
-  export default function HomePageClient({ products }: HomePageClientProps) {
-    return (
-      <div>
-        <HeroSection />
-        <LatestProducts products={products} />
-        <BestSelling products={products} />
-        <SpecsSection data={ourSpecsData} />
-        <PricingSection />
-        <NewsletterSection />
-      </div>
-    );
-  }
+export default function HomePageClient({ products }: HomePageClientProps) {
+  return (
+    <div>
+      <HeroSection />
+      <LatestProducts products={products} />
+      <BestSelling products={products} />
+      <SpecsSection data={ourSpecsData} />
+      <PricingSection />
+      <NewsletterSection />
+    </div>
+  );
+}

@@ -18,7 +18,7 @@ import {
 export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB limit
 
 /**
- * Allowed audio MIME types for upload validation
+ * Allowed media types for upload validation
  *
  * Comprehensive list for cross-browser compatibility:
  * - Different browsers report different MIME types for same format
@@ -43,6 +43,18 @@ export const ALLOWED_AUDIO_TYPES = [
   "audio/x-flac", // FLAC (alternate)
   "audio/3gpp", // 3GP
   "audio/3gpp2", // 3G2
+]; export const ALLOWED_IMAGE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/webp"
+]; export const ALLOWED_VIDEO_TYPES = [
+  "video/mp4",
+  "video/webm",
+  "video/ogg"
+]; export const ALLOWED_DOCUMENT_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 ];
 
 /**

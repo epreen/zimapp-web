@@ -22,7 +22,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
-      <ClerkProvider>
+        <ClerkProvider
+            appearance={{
+                layout: {
+                    socialButtonsPlacement: 'bottom',
+                },
+                theme: 'simple',
+                variables: {
+                    colorPrimary: "var(--billing-primary)",
+                    colorPrimaryForeground: "var(--background)",
+                    colorBackground: "var(--card)",
+                    colorInputBackground: "var(--background)",
+                    colorInputText: "var(--foreground)",
+                    colorText: "var(--foreground)",
+                    colorTextSecondary: "var(--muted-foreground)",
+                    colorShimmer: "var(--billing-primary)",
+                    fontFamily: "var(--font-poppins)"
+                },
+            }}
+        >
         <ConvexClientProvider>
             <html lang="en" suppressHydrationWarning>
                 <body className={cn('antialiased', poppins.variable)}>

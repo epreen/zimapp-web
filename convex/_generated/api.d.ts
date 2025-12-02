@@ -9,6 +9,8 @@
  */
 
 import type * as products from "../products.js";
+import type * as profiles from "../profiles.js";
+import type * as store from "../store.js";
 import type * as video from "../video.js";
 
 import type {
@@ -19,6 +21,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   products: typeof products;
+  profiles: typeof profiles;
+  store: typeof store;
   video: typeof video;
 }>;
 
