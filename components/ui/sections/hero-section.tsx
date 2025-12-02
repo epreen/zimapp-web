@@ -23,8 +23,8 @@ export default function HeroSection() {
                     className="relative flex-1 flex flex-col rounded-3xl overflow-hidden
                      bg-primary/10 dark:bg-secondary/10 xl:min-h-100"
                 >
-                    <div className="p-5 sm:p-16">
-                        <Badge className="inline-flex items-center gap-3
+                    <div className="p-5">
+                        <Badge className="hidden sm:inline-flex items-center gap-3
                               bg-primary/20 dark:bg-secondary/20
                               text-primary dark:text-secondary
                               pr-4 py-1 rounded-full">

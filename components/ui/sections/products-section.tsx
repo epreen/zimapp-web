@@ -86,7 +86,7 @@ export function LatestProducts({ products }: ProductsListProps) {
     const sorted = useSortedProducts({ products }).slice(0, 4);
   
     return (
-      <section className="px-6 max-w-6xl mx-auto">
+      <section className="px-6 mt-10 max-w-6xl mx-auto">
         <ProductsHeading
           title="Latest Products"
           description={`Showing ${sorted.length} of ${usePreloaded(products).length} products`}

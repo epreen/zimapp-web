@@ -18,8 +18,8 @@ export function PricingSection({ compact = false }: PricingSectionInterface) {
                 description="Choose a plan that fits your needs. Upgrade, downgrade, or cancel anytime."
             />
 
-            <div className="container mx-auto relative mt-10">
-                <div className={compact ? "max-w-4xl w-full" : "max-w-6xl w-full"}>
+            <div className="px-10 mx-auto relative mt-10 gap-4">
+                <div className={compact ? "max-w-4xl" : "max-w-6xl"}>
                     <PricingTable
                         appearance={{
                         elements: {
