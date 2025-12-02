@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     }
 
     // Determine plan-based file size limit
-    let maxFileSize = PLAN_LIMITS.basic.maxFileSize; // default to basic plan
+    let maxFileSize = PLAN_LIMITS.free.maxFileSize; // default to free plan
     if (has?.({ plan: "standard" })) maxFileSize = PLAN_LIMITS.standard.maxFileSize;
     else if (has?.({ plan: "premium" })) maxFileSize = PLAN_LIMITS.premium.maxFileSize;
     else if (has?.({ plan: "business" })) maxFileSize = PLAN_LIMITS.business.maxFileSize;
