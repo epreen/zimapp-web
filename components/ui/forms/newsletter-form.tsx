@@ -14,7 +14,7 @@ const Newsletter = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex items-center bg-foreground/5 text-sm p-1 rounded-full w-full max-w-xl my-10 border-2 border-foreground/5 ring ring-foreground/10"
+            className="flex items-center bg-foreground/5 text-sm p-1 rounded-full w-full max-w-md my-10 border-2 border-foreground/5 ring ring-foreground/10"
         >
             <Input
                 type="email"
