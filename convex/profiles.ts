@@ -1,5 +1,33 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
+
+/**
+ * Get a user's plan
+ * @param userId Clerk user ID
+ * @returns { plan: string | null }
+ */
+export const retrievePlan = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    const profile = await ctx.db.query("profiles")
+      .filter(p => p.eq(p.field("userId"), userId))
+      .first();
+
+    if (!profile) return { plan: "free" };
+
+    // Retrieve plan from publicMetadata or unsafeMetadata stored in profile
+    // Here we assume profile.plan exists; adjust if stored differently
+    return { plan: (profile.plan as string) || "free" };
+  },
+});
+
+export const retrieveByUserId = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    return await ctx.db.query("profiles").withIndex("byUserId", q => q.eq("userId", userId)).first();
+  }
+});
+
 
 /* -----------------------------
    Upgrade a user to a seller
@@ -26,8 +54,8 @@ export const upgradeToSeller = mutation({
 
     await ctx.db.patch(profileId, {
       role: "seller",
-      hasPaidSellerFee: true,
-      sellerSince: Date.now(),
+      hasPlan: true,
+      subscribedSince: Date.now(),
       verificationStatus: "pending",
     });
 

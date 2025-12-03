@@ -7,8 +7,9 @@ export default defineSchema({
   profiles: defineTable({
     userId: v.string(), // Clerk user ID
     role: v.union(v.literal("buyer"), v.literal("seller")),
-    hasPaidSellerFee: v.boolean(),
-    sellerSince: v.optional(v.number()),
+    hasPlan: v.boolean(),
+    plan: v.string(),
+    subscribedSince: v.optional(v.number()),
     verificationStatus: v.string(), // pending | verified | rejected
     verifiedAt: v.optional(v.number()),
     preferences: v.optional(v.array(v.string())),

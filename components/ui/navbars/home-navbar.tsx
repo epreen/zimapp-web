@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Menu, ShoppingCart } from "lucide-react";
+// import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+// import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+// import { Menu, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import ThemeToggle from "@/components/ui/controls/theme-toggle";
 // import { useSelector } from "react-redux";
@@ -99,7 +99,7 @@ const HomeNavbar = () => {
                         </Link>
                     </SignedOut>
 
-                    {/* Mobile Sheet */}
+                    {/* Mobile Sheet
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button
@@ -135,7 +135,7 @@ const HomeNavbar = () => {
                                 ))}
                             </ul>
                         </SheetContent>
-                    </Sheet>
+                    </Sheet> */}
                 </div>
             </div>
         </motion.nav>

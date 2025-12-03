@@ -37,7 +37,7 @@ export const create = mutation({
       );
     }
 
-    if (userProfile.role !== "seller" || !userProfile.hasPaidSellerFee) {
+    if (userProfile.role !== "seller" || !userProfile.hasPlan) {
       throw new Error(
         "Only verified sellers may create stores and sell their products."
       );
