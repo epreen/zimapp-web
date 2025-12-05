@@ -11,21 +11,21 @@ import { Id } from "@/convex/_generated/dataModel";
 import { getStoreLimit, canCreateStore } from "@/lib/store-limit";
 import { PlanName } from "@/lib/tier-config";
 
-/** Validate an upload against user plan limits */
+/* Upload validation against the user's plan */
 export async function validateUpload(
   userId: string,
   fileSize: number,
   durationSec?: number
 ): Promise<UploadValidationResult> {
   const authObj = await auth();
-
   if (!authObj.userId) {
     throw new Error("User is not authenticated.");
   }
 
-  return await checkUploadLimits(authObj.userId, fileSize, durationSec);
+  return checkUploadLimits(authObj.userId, fileSize, durationSec);
 }
 
+/* Create a new store — authenticated and owned by the requesting user */
 export async function createStore(
   userId: string,
   name: string,
@@ -33,11 +33,25 @@ export async function createStore(
   category: string,
   logoFile?: File
 ) {
-  const userProfile = await convex.query(api.profiles.retrieveByUserId, { userId });
-  if (!userProfile) throw new Error("Profile not found");
+  // Identity check: trust no one
+  const authObj = await auth();
+  if (!authObj.userId) {
+    throw new Error("User is not authenticated.");
+  }
+  if (authObj.userId !== userId) {
+    throw new Error("Unauthorized: user mismatch.");
+  }
 
+  // Load & verify user profile
+  const userProfile = await convex.query(api.profiles.retrieveByUserId, { userId });
+  if (!userProfile) {
+    throw new Error("Profile not found");
+  }
+
+  // Enforce plan limits
   const maxStores = getStoreLimit(userProfile.plan as PlanName);
   const existingStores = await convex.query(api.store.retrieveByUser, { userId });
+
   if (!canCreateStore(existingStores.length, maxStores)) {
     throw new Error(
       `You can only create up to ${maxStores} store(s) on your current plan (${userProfile.plan}).`
@@ -45,12 +59,17 @@ export async function createStore(
   }
 
   let logoUrl: string | undefined;
+
+  // Optional logo upload
   if (logoFile) {
     const validation = await validateUpload(userId, logoFile.size);
-    if (!validation.allowed) throw new Error(validation.message);
+    if (!validation.allowed) {
+      throw new Error(validation.message);
+    }
 
     const ext = logoFile.name.split(".").pop();
     const filename = `store-logos/${uuidv4()}${ext ? "." + ext : ""}`;
+
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       throw new Error("BLOB_READ_WRITE_TOKEN environment variable is not set");
     }
@@ -63,7 +82,8 @@ export async function createStore(
     logoUrl = blob.url;
   }
 
-  return await convex.mutation(api.store.create, {
+  // Create the store entry
+  return convex.mutation(api.store.create, {
     userId,
     name,
     description,
@@ -74,6 +94,7 @@ export async function createStore(
   });
 }
 
+/* Update an existing store */
 export async function updateStore(
   storeId: Id<"stores">,
   updates: {
@@ -84,36 +105,35 @@ export async function updateStore(
     isActive?: boolean;
   }
 ) {
-  // 1. Authenticate the user
   const authObj = await auth();
   if (!authObj.userId) {
     throw new Error("User is not authenticated.");
   }
+
   const currentUserId = authObj.userId;
 
-  // 2. Load target store
+  // Load target store
   const store = await convex.query(api.store.get, { id: storeId });
   if (!store) {
     throw new Error("Store not found.");
   }
 
-  // 3. Verify ownership
+  // Ownership check
   if (store.userId !== currentUserId) {
     throw new Error("Unauthorized: You can only update your own stores.");
   }
 
-  // 4. Load user profile for plan enforcement
+  // Load profile for plan enforcement
   const profile = await convex.query(api.profiles.retrieveByUserId, {
     userId: currentUserId,
   });
   if (!profile) {
-    throw new Error("Profile not found for user.");
+    throw new Error("Profile not found.");
   }
 
-  // Prepare update fields
-  let logoUrl: string | undefined = undefined;
+  let logoUrl: string | undefined;
 
-  // 5. If updating logo, validate upload permissions first
+  // If updating logo, validate & upload
   if (updates.logoFile) {
     const validation = await checkUploadLimits(
       currentUserId,
@@ -121,13 +141,9 @@ export async function updateStore(
     );
 
     if (!validation.allowed) {
-      throw new Error(
-        validation.message ||
-          "Your current plan does not allow this upload."
-      );
+      throw new Error(validation.message || "Upload exceeds plan limits.");
     }
 
-    // 6. Only upload after validation passes
     const ext = updates.logoFile.name.split(".").pop();
     const filename = `store-logos/${uuidv4()}${ext ? "." + ext : ""}`;
 
@@ -144,8 +160,8 @@ export async function updateStore(
     logoUrl = blob.url;
   }
 
-  // 7. Apply only the validated fields
-  return await convex.mutation(api.store.update, {
+  // Apply validated updates
+  return convex.mutation(api.store.update, {
     id: storeId,
     name: updates.name,
     description: updates.description,
@@ -155,6 +171,7 @@ export async function updateStore(
   });
 }
 
+/* Soft delete a store */
 export async function deleteStore(storeId: Id<"stores">) {
   const authObj = await auth();
   if (!authObj.userId) {
@@ -162,7 +179,11 @@ export async function deleteStore(storeId: Id<"stores">) {
   }
 
   const store = await convex.query(api.store.get, { id: storeId });
-  if (!store) throw new Error("Store not found");
+  if (!store) {
+    throw new Error("Store not found");
+  }
+
+  // Ownership validation
   if (store.userId !== authObj.userId) {
     throw new Error("Unauthorized: You can only delete your own stores");
   }
@@ -172,5 +193,6 @@ export async function deleteStore(storeId: Id<"stores">) {
     isActive: false,
     verificationStatus: "deleted",
   });
+
   return { success: true };
 }

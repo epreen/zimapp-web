@@ -129,7 +129,7 @@ export default function CreateStoreForm({ userId }: CreateStoreFormProps) {
               {logoFile && (
                 <div className="mt-2">
                   <img
-                    src={URL.createObjectURL(logoFile)}
+                    src={previewUrl!}
                     alt="Logo Preview"
                     className="h-24 w-24 object-contain rounded-md border"
                   />

@@ -143,7 +143,7 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
 
       {userCanCreate && (
         <Button className="mt-4 w-full" asChild>
-          <Link href="/dashboard/store/create">Create another store</Link>
+          <Link href="/dashboard/stores/create">Create another store</Link>
         </Button>
       )}
     </div>
