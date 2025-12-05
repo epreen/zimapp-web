@@ -26,7 +26,6 @@ export const ProfileSyncProvider = ({ children }: { children: React.ReactNode })
     try {
       await syncProfile({
         userId: user.id,
-        publicMetadata: user.publicMetadata,
       });
       setSynced(true);
     } catch (err) {

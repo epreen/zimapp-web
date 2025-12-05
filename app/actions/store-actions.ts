@@ -58,7 +58,9 @@ export async function createStore(
     const blob = await put(filename, logoFile, {
       token: process.env.BLOB_READ_WRITE_TOKEN,
       access: "public",
-    });    logoUrl = blob.url;
+    });
+
+    logoUrl = blob.url;
   }
 
   return await convex.mutation(api.store.create, {
@@ -82,20 +84,67 @@ export async function updateStore(
     isActive?: boolean;
   }
 ) {
-  let logoUrl: string | undefined = undefined;
-  if (updates.logoFile) {
-    // If you have userId (owner) info available, do plan/upload checks as needed
+  // 1. Authenticate the user
+  const authObj = await auth();
+  if (!authObj.userId) {
+    throw new Error("User is not authenticated.");
+  }
+  const currentUserId = authObj.userId;
 
+  // 2. Load target store
+  const store = await convex.query(api.store.get, { id: storeId });
+  if (!store) {
+    throw new Error("Store not found.");
+  }
+
+  // 3. Verify ownership
+  if (store.userId !== currentUserId) {
+    throw new Error("Unauthorized: You can only update your own stores.");
+  }
+
+  // 4. Load user profile for plan enforcement
+  const profile = await convex.query(api.profiles.retrieveByUserId, {
+    userId: currentUserId,
+  });
+  if (!profile) {
+    throw new Error("Profile not found for user.");
+  }
+
+  // Prepare update fields
+  let logoUrl: string | undefined = undefined;
+
+  // 5. If updating logo, validate upload permissions first
+  if (updates.logoFile) {
+    const validation = await checkUploadLimits(
+      currentUserId,
+      updates.logoFile.size
+    );
+
+    if (!validation.allowed) {
+      throw new Error(
+        validation.message ||
+          "Your current plan does not allow this upload."
+      );
+    }
+
+    // 6. Only upload after validation passes
     const ext = updates.logoFile.name.split(".").pop();
     const filename = `store-logos/${uuidv4()}${ext ? "." + ext : ""}`;
+
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error("BLOB_READ_WRITE_TOKEN environment variable is not set.");
+    }
+
     const blob = await put(filename, updates.logoFile, {
       access: "public",
       addRandomSuffix: true,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
+
     logoUrl = blob.url;
   }
 
+  // 7. Apply only the validated fields
   return await convex.mutation(api.store.update, {
     id: storeId,
     name: updates.name,

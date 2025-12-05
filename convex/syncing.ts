@@ -5,10 +5,9 @@ import { mutation } from "./_generated/server";
 export const syncProfile = mutation({
   args: {
     userId: v.string(),
-    publicMetadata: v.optional(v.object({})),
   },
 
-  handler: async (ctx, { userId, publicMetadata }) => {
+  handler: async (ctx, { userId }) => {
     const existing = await ctx.db
       .query("profiles")
       .withIndex("byUserId", q => q.eq("userId", userId))

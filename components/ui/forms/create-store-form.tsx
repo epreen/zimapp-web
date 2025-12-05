@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useEffect, useState } from 'react';
 
 interface FormValues {
   name: string;
@@ -28,6 +29,17 @@ export default function CreateStoreForm({ userId }: CreateStoreFormProps) {
   const router = useRouter();
 
   const logoFile = watch('logoFile')?.[0];
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (logoFile) {
+      const url = URL.createObjectURL(logoFile);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreviewUrl(null);
+  }, [logoFile])
 
   const onSubmit = async (data: FormValues) => {
     if (!data.name || !data.description || !data.category) {

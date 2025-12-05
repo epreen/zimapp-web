@@ -35,15 +35,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                     colorBackground: "var(--card)",
                     colorInputBackground: "var(--background)",
                     colorInputText: "var(--foreground)",
-                    colorText: "var(--billing-primary)",
-                    colorTextSecondary: "var(--muted-foreground)",
+            
+                    // Updated (deprecated → new)
+                    colorForeground: "var(--foreground)",          // was colorText
+                    colorMutedForeground: "var(--muted-foreground)",    // was colorTextSecondary
+            
+                    // These remain unchanged as instructed
                     colorShimmer: "var(--billing-primary)",
-                    colorForeground: "var(--foreground)",
                     colorBorder: "var(--muted-foreground)",
                     colorMuted: "var(--card)",
+            
                     fontFamily: "var(--font-poppins)"
                 },
-            }}
+            }}        
         >
             <ConvexClientProvider>
                 <html lang="en" suppressHydrationWarning>

@@ -12,7 +12,7 @@ import ThemeToggle from "@/components/ui/controls/theme-toggle";
 // import { useSelector } from "react-redux";
 // import { selectCartTotal } from "@/utils/slices/cart";
 
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ManageStoresInline } from "@/components/ui/modals/manage-stores-modal"; // inline version of ManageStores
 import { FaStore } from "react-icons/fa6";
 
