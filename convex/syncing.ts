@@ -1,21 +1,21 @@
+// convex/syncProfile.ts
 import { v } from "convex/values";
 import { mutation } from "./_generated/server";
 
-/**
- * Ensure a profile exists for a given Clerk user ID
- */
 export const syncProfile = mutation({
   args: {
     userId: v.string(),
-    publicMetadata: v.optional(v.object({})), // optional Clerk metadata
+    publicMetadata: v.optional(v.object({})),
   },
+
   handler: async (ctx, { userId, publicMetadata }) => {
-    const existingProfile = await ctx.db
+    const existing = await ctx.db
       .query("profiles")
-      .withIndex("byUserId", (q) => q.eq("userId", userId))
+      .withIndex("byUserId", q => q.eq("userId", userId))
       .first();
 
-    if (!existingProfile) {
+    // Create if missing
+    if (!existing) {
       await ctx.db.insert("profiles", {
         userId,
         role: "buyer",
@@ -28,10 +28,13 @@ export const syncProfile = mutation({
         subscribedSince: undefined,
         verifiedAt: undefined,
       });
-    } else {
-      await ctx.db.patch(existingProfile._id, {
-        aiPersona: existingProfile.aiPersona,
-      });
+      return;
     }
+
+    // Update always — keeps profile fresh over time
+    await ctx.db.patch(existing._id, {
+      // You decide what fields mirror Clerk / metadata
+      aiPersona: existing.aiPersona ?? undefined,
+    });
   },
 });

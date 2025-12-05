@@ -5,9 +5,9 @@ import Header from "@/components/ui/header";
 const PublicLayout = ({children} : {children: ReactNode}) => {
   return (
     <>
-        <Header />
-        {children}
-        <Footer />
+      <Header />
+      {children}
+      <Footer />
     </>
   )
 }

@@ -11,7 +11,7 @@
 import type * as products from "../products.js";
 import type * as profiles from "../profiles.js";
 import type * as store from "../store.js";
-import type * as syncProfile from "../syncProfile.js";
+import type * as syncing from "../syncing.js";
 import type * as video from "../video.js";
 
 import type {
@@ -24,7 +24,7 @@ declare const fullApi: ApiFromModules<{
   products: typeof products;
   profiles: typeof profiles;
   store: typeof store;
-  syncProfile: typeof syncProfile;
+  syncing: typeof syncing;
   video: typeof video;
 }>;
 

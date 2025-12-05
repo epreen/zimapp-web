@@ -86,7 +86,7 @@
 .dark {
     --radial-gradient-hue: 50; /* golden-yellow tone */
 
-    --background: hsl(var(--hue-brand) 30% 4%);
+    --background: hsl(var(--hue-brand) 30% 10%);
     --foreground: hsl(var(--hue-brand) 50% 98%);
     --card: hsl(var(--hue-brand) 10% 15%);
     --card-foreground: hsl(var(--hue-brand) 10% 98%);

@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ClerkProvider
             appearance={{
                 layout: {
-                    socialButtonsPlacement: 'bottom',
+                    socialButtonsPlacement: 'bottom'
                 },
                 theme: 'simple',
                 variables: {
@@ -35,26 +35,29 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                     colorBackground: "var(--card)",
                     colorInputBackground: "var(--background)",
                     colorInputText: "var(--foreground)",
-                    colorText: "var(--foreground)",
+                    colorText: "var(--billing-primary)",
                     colorTextSecondary: "var(--muted-foreground)",
                     colorShimmer: "var(--billing-primary)",
+                    colorForeground: "var(--foreground)",
+                    colorBorder: "var(--muted-foreground)",
+                    colorMuted: "var(--card)",
                     fontFamily: "var(--font-poppins)"
                 },
             }}
         >
-        <ConvexClientProvider>
-            <html lang="en" suppressHydrationWarning>
-                <body className={cn('antialiased', poppins.variable)}>
-                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                        <StoreProvider>
-                            <ProfileSyncProvider>
-                                {children}
-                            </ProfileSyncProvider>
-                        </StoreProvider>
-                    </ThemeProvider>
-                </body>
-            </html>
-        </ConvexClientProvider>
-      </ClerkProvider>
+            <ConvexClientProvider>
+                <html lang="en" suppressHydrationWarning>
+                    <body className={cn('antialiased', poppins.variable)}>
+                        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                            <StoreProvider>
+                                <ProfileSyncProvider>
+                                    {children}
+                                </ProfileSyncProvider>
+                            </StoreProvider>
+                        </ThemeProvider>
+                    </body>
+                </html>
+            </ConvexClientProvider>
+        </ClerkProvider>
     );
 }

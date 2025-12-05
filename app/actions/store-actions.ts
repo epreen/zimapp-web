@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { put } from "@vercel/blob";
 import { Id } from "@/convex/_generated/dataModel";
 import { getStoreLimit, canCreateStore } from "@/lib/store-limit";
+import { PlanName } from "@/lib/tier-config";
 
 /** Validate an upload against user plan limits */
 export async function validateUpload(
@@ -35,7 +36,7 @@ export async function createStore(
   const userProfile = await convex.query(api.profiles.retrieveByUserId, { userId });
   if (!userProfile) throw new Error("Profile not found");
 
-  const maxStores = getStoreLimit(userProfile.plan as any);
+  const maxStores = getStoreLimit(userProfile.plan as PlanName);
   const existingStores = await convex.query(api.store.retrieveByUser, { userId });
   if (!canCreateStore(existingStores.length, maxStores)) {
     throw new Error(
@@ -50,11 +51,14 @@ export async function createStore(
 
     const ext = logoFile.name.split(".").pop();
     const filename = `store-logos/${uuidv4()}${ext ? "." + ext : ""}`;
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error("BLOB_READ_WRITE_TOKEN environment variable is not set");
+    }
+
     const blob = await put(filename, logoFile, {
-      token: process.env.BLOB_READ_WRITE_TOKEN!,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
       access: "public",
-    });
-    logoUrl = blob.url;
+    });    logoUrl = blob.url;
   }
 
   return await convex.mutation(api.store.create, {
@@ -103,8 +107,16 @@ export async function updateStore(
 }
 
 export async function deleteStore(storeId: Id<"stores">) {
+  const authObj = await auth();
+  if (!authObj.userId) {
+    throw new Error("Unauthorized");
+  }
+
   const store = await convex.query(api.store.get, { id: storeId });
   if (!store) throw new Error("Store not found");
+  if (store.userId !== authObj.userId) {
+    throw new Error("Unauthorized: You can only delete your own stores");
+  }
 
   await convex.mutation(api.store.update, {
     id: storeId,

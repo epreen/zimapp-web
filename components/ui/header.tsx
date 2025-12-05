@@ -1,7 +1,7 @@
 'use client';
 
 // import { Protect } from "@clerk/nextjs";
-// import { useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 // import { api } from "@/convex/_generated/api";
 import HomeNavbar from "@/components/ui/navbars/home-navbar";
 // import StoreNavbar from "@/components/ui/navbars/store-navbar";
@@ -30,10 +30,12 @@ import HomeNavbar from "@/components/ui/navbars/home-navbar";
 // }
 
 export default function Header() {
+  const { user } = useUser();
+  const userId = user?.id || "";
   // const pathname =
   //   typeof window !== "undefined" ? window.location.pathname : "";
   // const isStore = pathname.startsWith("/store");
 
   // return isStore ? <ProtectedStoreNavbar /> : <HomeNavbar />;
-  return <HomeNavbar />;
+  return <HomeNavbar userId={userId} />;
 }

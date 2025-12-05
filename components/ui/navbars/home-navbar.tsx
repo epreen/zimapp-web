@@ -12,11 +12,15 @@ import ThemeToggle from "@/components/ui/controls/theme-toggle";
 // import { useSelector } from "react-redux";
 // import { selectCartTotal } from "@/utils/slices/cart";
 
-import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { ManageStoresInline } from "@/components/ui/modals/manage-stores-modal"; // inline version of ManageStores
 import { FaStore } from "react-icons/fa6";
 
-const HomeNavbar = () => {
+interface HomeNavbarProps {
+    userId: string
+}
+
+const HomeNavbar = ({userId}: HomeNavbarProps) => {
     const navRef = useRef<HTMLDivElement>(null);
     // const cartCount = useSelector(selectCartTotal);
 
@@ -85,18 +89,18 @@ const HomeNavbar = () => {
                         <div className="relative">
                             <UserButton>
                                 <UserButton.UserProfilePage label="Stores" url="manage-store" labelIcon={<FaStore />}>
-                                    <ManageStoresInline />
+                                    <ManageStoresInline userId={userId} />
                                 </UserButton.UserProfilePage>
                             </UserButton>
                         </div>
                     </SignedIn>
 
                     <SignedOut>
-                        <Link href="/sign-in">
-                            <Button variant="outline" size="sm">
-                                Sign in
+                        <SignInButton mode="modal">
+                            <Button className="gradient-primary dark:gradient-secondary text-background hover-glow shadow-lg transition-all duration-300">
+                                Sign In
                             </Button>
-                        </Link>
+                        </SignInButton>
                     </SignedOut>
 
                     {/* Mobile Sheet
