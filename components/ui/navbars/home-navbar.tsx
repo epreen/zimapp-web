@@ -25,6 +25,8 @@ const HomeNavbar = ({userId}: HomeNavbarProps) => {
     // const cartCount = useSelector(selectCartTotal);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    
+    const { user } = useUser();
 
     useEffect(() => {
         gsap.fromTo(
@@ -87,12 +89,11 @@ const HomeNavbar = ({userId}: HomeNavbarProps) => {
 
                     <SignedIn>
                         {(() => {
-                            const { user } = useUser();
                             if (!user) return null;
 
                             const role = user.publicMetadata?.role as string | undefined;
                             const plan = user.publicMetadata?.plan as string | undefined;
-
+                        
                             const canManageStores =
                             role !== "customer" && plan !== "free";
 

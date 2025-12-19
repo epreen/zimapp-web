@@ -89,10 +89,11 @@ export default defineSchema({
     createdAt: v.number(),
     isArchived: v.boolean(),
     deletedAt: v.optional(v.number())
-  }),
-
+  }).index("byCreatedAt", ["createdAt"])
+    .index("byIsArchived", ["isArchived"]),
+    
   messages: defineTable({
-    chatId: v.string(),
+    chatId: v.id("chats"),
     senderId: v.string(),
     receiverId: v.string(),
     message: v.string(),

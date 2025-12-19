@@ -65,10 +65,10 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
     enterprise: has({ plan: "enterprise" }),
   };  
 
-  if (planAccess.standard) currentPlan = "standard";
-  else if (planAccess.premium) currentPlan = "premium";
+  if (planAccess.enterprise) currentPlan = "enterprise";
   else if (planAccess.business) currentPlan = "business";
-  else if (planAccess.enterprise) currentPlan = "enterprise";
+  else if (planAccess.premium) currentPlan = "premium";
+  else if (planAccess.standard) currentPlan = "standard";
 
   const storeLimit = getStoreLimit(currentPlan);
 
@@ -103,7 +103,7 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
           <CardTitle>Manage Your Store</CardTitle>
           <Separator className="bg-foreground/3 mb-10" />
           <CardDescription className="text-xs">
-            You have up to {storeLimit} slot for store limits.
+            You have ${storeLimit} store slot(s) available.
           </CardDescription>
         </CardHeader>
         <CardContent>

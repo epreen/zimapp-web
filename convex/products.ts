@@ -10,15 +10,32 @@ export const create = mutation({
     images: v.array(v.string()),
   },
   handler: async (ctx, args) => {
+    // Validate price
+    if (args.price <= 0) {
+      throw new Error("Price must be greater than 0");
+    }
+    
+    // Validate images
+    if (args.images.length === 0) {
+      throw new Error("At least one image is required");
+    }
+    
+    // Verify store exists
+    const store = await ctx.db.get(args.storeId);
+    if (!store) {
+      throw new Error("Store not found");
+    }
+    
+    // TODO: Add authorization check
+    // Verify the current user owns or can create products for this store
+    
     return await ctx.db.insert("products", {
       storeId: args.storeId,
       name: args.name,
       description: args.description,
       price: args.price,
       images: args.images,
-      generatedDescription: undefined,
       keywords: [],
-      category: undefined,
       ratings: [],
       engagementScore: 0,
       moderationStatus: "pending",
@@ -35,6 +52,31 @@ export const update = mutation({
     category: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Verify product exists
+    const product = await ctx.db.get(args.id);
+    
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    
+    // TODO: Add authorization check
+    // Verify the current user owns this product's store
+    
+    // Build update object, excluding undefined values
+    const updates: Record<string, any> = {};
+
+    if (args.generatedDescription !== undefined) {
+      updates.generatedDescription = args.generatedDescription;
+    }
+
+    if (args.keywords !== undefined) {
+      updates.keywords = args.keywords;
+    }
+
+    if (args.category !== undefined) {
+      updates.category = args.category;
+    }
+
     await ctx.db.patch(args.id, {
       generatedDescription: args.generatedDescription,
       keywords: args.keywords,

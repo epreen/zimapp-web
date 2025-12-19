@@ -1,10 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { Roles } from "@/types/globals";
+import { Roles } from "@/lib/tier-config";
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/api/payment(.*)",
+  "/admin(.*)",
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);

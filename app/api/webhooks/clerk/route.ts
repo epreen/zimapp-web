@@ -1,4 +1,4 @@
-// app/api/webhooks/clerk/route.ts
+// app/api/webhooks/clerk/route.ts   } catch (err) {
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -42,13 +42,24 @@ export async function POST(req: NextRequest) {
     // Handle plan upgrade/downgrade — assume event contains the plan info
     if (event.type === "subscription.updated" || event.type === "subscription.created") {
       const userId = event.data.payer?.user_id;
-      if (!userId) return;
+      if (!userId) {
+        return NextResponse.json({ ok: true }); // or handle as needed
+      }
     
       // Find the first active plan item
       const activeItem = event.data.items?.find((i: any) => i.status === "active");
-      if (!activeItem?.plan?.slug) return; // early exit if missing
+      if (!activeItem?.plan?.slug) {
+        return NextResponse.json({ ok: true }); // or handle as needed
+      }
+
+      const validPlans: Plans[] = ["free", "standard", "premium", "business", "enterprise"];
 
       const planSlug = activeItem.plan.slug as Plans; // now TS is happy
+      if (!validPlans.includes(planSlug)) {
+        console.warn(`Unknown plan slug received: ${planSlug}`);
+        return NextResponse.json({ ok: true }); // or handle accordingly
+      }
+
       const newRole = getRoleForPlan(planSlug);
 
       await clerk.users.updateUserMetadata(userId, {
@@ -57,11 +68,11 @@ export async function POST(req: NextRequest) {
           role: newRole,
         },
       });
-    }    
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Clerk webhook error:", err);
+    console.error("Clerk webhook error: ", err);
     return NextResponse.json({ error: "Invalid webhook" }, { status: 400 });
   }
 }

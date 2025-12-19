@@ -85,12 +85,12 @@ export function ProductsHeading({
 export function LatestProducts({ products }: ProductsListProps) {
   const items = usePreloaded(products);
 
-  if (items.length === 0) return null;
-
   const sorted = useMemo(
     () => [...items].sort((a, b) => b.createdAt - a.createdAt).slice(0, 4),
     [items]
   );
+
+  if (sorted.length === 0) return null;
 
   return (
     <section className="px-6 mt-10 max-w-6xl mx-auto">
@@ -107,8 +107,6 @@ export function LatestProducts({ products }: ProductsListProps) {
 export function BestSelling({ products }: ProductsListProps) {
   const items = usePreloaded(products);
 
-  if (items.length === 0) return null;
-
   const sortedBest = useMemo(() => {
     return [...items]
       .sort(
@@ -116,6 +114,8 @@ export function BestSelling({ products }: ProductsListProps) {
       )
       .slice(0, 8);
   }, [items]);
+
+  if (sortedBest.length === 0) return null;
 
   return (
     <section className="px-6 my-30 max-w-6xl mx-auto">

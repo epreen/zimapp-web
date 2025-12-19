@@ -11,14 +11,21 @@ export async function updateUserPlan(userId: string, plan: Plans) {
     const clerk = await clerkClient();
 
     const storeLimit = STORE_LIMITS[plan] ?? 0; // fallback if plan key is missing
+    const limits = PLAN_LIMITS[plan] ?? {};
+    const features = PLAN_FEATURES[plan] ?? {};
 
-    await clerk.users.updateUserMetadata(userId, {
-        publicMetadata: {
-        role,
-        plan,
-        limits: PLAN_LIMITS[plan],
-        features: PLAN_FEATURES[plan],
-        storeLimit,
-        },
-    });
+    try {
+        await clerk.users.updateUserMetadata(userId, {
+            publicMetadata: {
+            role,
+            plan,
+            limits,
+            features,
+            storeLimit,
+            },
+        });
+    } catch (error) {
+        console.error(`Failed to update user plan for userId ${userId}:`, error);
+        throw new Error(`Failed to update user plan: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
 }

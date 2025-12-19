@@ -2,10 +2,8 @@
 export type ClerkRole =
   | "admin"
   | "customer"
-  | "standard"
-  | "premium"
   | "business"
-  | "enterprise";
+  | "verified_business";
 
 export type ClerkPlan =
   | "free"

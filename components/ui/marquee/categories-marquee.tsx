@@ -11,7 +11,7 @@ export default function CategoriesMarquee() {
             <div className="absolute left-0 top-0 h-full w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
 
             <div className="flex min-w-[200%] animate-[marqueeScroll_10s_linear_infinite] sm:animate-[marqueeScroll_40s_linear_infinite] group-hover:[animation-play-state:paused] gap-4">
-                {[...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories].map((item, i) => (
+                {Array(22).fill(categories).flat().map((item, i) => (
                     <Badge
                         key={i}
                         asChild
