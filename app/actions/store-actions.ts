@@ -35,9 +35,15 @@ export async function createStore(
   if (authObj.userId !== userId) throw new Error("Unauthorized: user mismatch.");
 
   // Fetch user plan from Clerk public metadata
-  const clerk= await clerkClient()
-  const clerkUser = clerk.users.getUser(userId);
-  const userPlan: Plans = ((await clerkUser).publicMetadata.plan ?? "free") as Plans;
+  const clerk = await clerkClient();
+  const clerkUser = await clerk.users.getUser(userId);
+  const planFromMetadata = clerkUser.publicMetadata.plan ?? "free";
+  
+  // Validate plan value
+  const validPlans: Plans[] = ["free", "standard", "premium", "business", "enterprise"];
+  const userPlan: Plans = validPlans.includes(planFromMetadata as Plans) 
+    ? (planFromMetadata as Plans) 
+    : "free";
 
   // Enforce plan limits
   const maxStores = getStoreLimit(userPlan);
@@ -73,7 +79,6 @@ export async function createStore(
 
   // Create the store entry
   return convex.mutation(api.store.create, {
-    userId,
     name,
     description,
     category,

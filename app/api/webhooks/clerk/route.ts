@@ -54,13 +54,13 @@ export async function POST(req: NextRequest) {
 
       const validPlans: Plans[] = ["free", "standard", "premium", "business", "enterprise"];
 
-      const planSlug = activeItem.plan.slug as Plans; // now TS is happy
-      if (!validPlans.includes(planSlug)) {
+      const planSlug = activeItem.plan.slug;
+      if (!validPlans.includes(planSlug as Plans)) {
         console.warn(`Unknown plan slug received: ${planSlug}`);
         return NextResponse.json({ ok: true }); // or handle accordingly
       }
 
-      const newRole = getRoleForPlan(planSlug);
+      const newRole = getRoleForPlan(planSlug as Plans);
 
       await clerk.users.updateUserMetadata(userId, {
         publicMetadata: {

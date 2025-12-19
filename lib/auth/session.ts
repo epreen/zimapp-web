@@ -3,7 +3,7 @@ import { Plans, Roles, PLAN_FEATURES, PLAN_LIMITS } from "@/lib/tier-config";
 import { getStoreLimit } from "@/lib/store-limit";
 
 function isValidRole(value: unknown): value is Roles {
-  return typeof value === 'string' && ['customer', 'admin', /* other valid roles */].includes(value);
+  return typeof value === 'string' && ['customer', 'business', 'verified_business'].includes(value);
 }
 
 function isValidPlan(value: unknown): value is Plans {

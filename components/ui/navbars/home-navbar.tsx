@@ -24,7 +24,7 @@ const HomeNavbar = ({userId}: HomeNavbarProps) => {
     const navRef = useRef<HTMLDivElement>(null);
     // const cartCount = useSelector(selectCartTotal);
 
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+    // const [dropdownOpen, setDropdownOpen] = useState(false);
     
     const { user } = useUser();
 

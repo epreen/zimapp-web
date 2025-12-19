@@ -7,7 +7,6 @@ import { getRoleAndPlan } from "./lib/auth";
 
 export const create = mutation({
   args: {
-    userId: v.string(),
     name: v.string(),
     description: v.string(),
     category: v.string(),
@@ -49,8 +48,8 @@ export const create = mutation({
       description: args.description,
       logo: args.logo,
       category: args.category,
-      isActive: true,
-      verificationStatus: "pending",
+      isActive: args.isActive,
+      verificationStatus: args.verificationStatus ?? "pending",
       createdAt: Date.now(),
     });
   },

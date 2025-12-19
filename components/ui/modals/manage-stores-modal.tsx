@@ -103,7 +103,7 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
           <CardTitle>Manage Your Store</CardTitle>
           <Separator className="bg-foreground/3 mb-10" />
           <CardDescription className="text-xs">
-            You have ${storeLimit} store slot(s) available.
+            You have {storeLimit} store slot(s) available.
           </CardDescription>
         </CardHeader>
         <CardContent>
