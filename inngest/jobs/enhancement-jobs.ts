@@ -12,9 +12,9 @@ export async function generateListingEnhancement(productId: Id<"products">, desc
   // Save to Convex
   await convex.mutation(api.products.update, {
     id: productId,
-    optimizedDescription: enhanced.description,
-    aiKeywords: enhanced.keywords,
-    aiCategory: enhanced.category,
+    generatedDescription: enhanced.description,
+    keywords: enhanced.keywords,
+    category: enhanced.category,
   });
   return enhanced;
 }

@@ -17,18 +17,6 @@ export const nightlyStoreHealthCheck = inngest.createFunction(
       return result.page;
     });
 
-    // Update each store
-    for (const store of stores) {
-      await step.run(`evaluate store ${store._id}`, async () => {
-        const scoreObj = await openai.generateVideoMetadata(store.description);
-
-        await convex.mutation(api.store.update, {
-          id: store._id,
-          aiHealthScore: scoreObj?.engagementScore ?? 0.5,
-        });
-      });
-    }
-
     return { processed: stores.length };
   }
 );

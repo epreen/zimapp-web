@@ -30,7 +30,7 @@ export async function processVideoUpload(videoUrl: string, videoId: Id<"videos">
     await convex.mutation(api.video.update, {
       id: videoId,
       transcript,
-      aiTags: tags,
+      tags: tags,
       engagementScore: aiMeta?.prediction ?? null,
       moderationStatus: safety.safe ? "approved" : "rejected",
     });
