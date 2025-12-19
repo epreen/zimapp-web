@@ -42,7 +42,7 @@ export async function POST(req: Request) {
             storeId,
             url,
             moderationStatus: "pending",
-            createdAt: Date.now(),
+            uploadedAt: Date.now(),
         });
 
         // send event to Inngest to process video
