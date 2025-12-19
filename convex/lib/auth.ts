@@ -1,9 +1,9 @@
 // convex/lib/auth.ts
-import type { ClerkRole, ClerkPlan } from "../types/auth";
+import { Plans, Roles } from "../../lib/tier-config";
 
 export function getRoleAndPlan(
   publicMetadata: unknown
-): { role?: ClerkRole; plan?: ClerkPlan } {
+): { role?: Roles; plan?: Plans } {
   if (
     !publicMetadata ||
     typeof publicMetadata !== "object" ||
@@ -15,10 +15,10 @@ export function getRoleAndPlan(
   const meta = publicMetadata as Record<string, unknown>;
 
   const role =
-    typeof meta.role === "string" ? (meta.role as ClerkRole) : undefined;
+    typeof meta.role === "string" ? (meta.role as Roles) : undefined;
 
   const plan =
-    typeof meta.plan === "string" ? (meta.plan as ClerkPlan) : undefined;
+    typeof meta.plan === "string" ? (meta.plan as Plans) : undefined;
 
   return { role, plan };
 }

@@ -12,7 +12,6 @@ import type * as lib_auth from "../lib/auth.js";
 import type * as products from "../products.js";
 import type * as profiles from "../profiles.js";
 import type * as store from "../store.js";
-import type * as types_auth from "../types/auth.js";
 import type * as video from "../video.js";
 
 import type {
@@ -26,7 +25,6 @@ declare const fullApi: ApiFromModules<{
   products: typeof products;
   profiles: typeof profiles;
   store: typeof store;
-  "types/auth": typeof types_auth;
   video: typeof video;
 }>;
 

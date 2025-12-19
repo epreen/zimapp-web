@@ -7,19 +7,28 @@ import { getRoleAndPlan } from "./lib/auth";
 
 export const create = mutation({
   args: {
+    userId: v.string(),
     name: v.string(),
     description: v.string(),
-    logo: v.optional(v.string()),
     category: v.string(),
+    logo: v.optional(v.string()),
+    isActive: v.boolean(),
+    verificationStatus: v.optional(
+      v.union(
+        v.literal("pending"),
+        v.literal("verified"),
+        v.literal("rejected")
+      ))
   },
+
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
 
     const { role, plan } = getRoleAndPlan(identity.publicMetadata);
 
-    if (role !== "business") {
-      throw new Error("Only business sellers can create stores");
+    if (role == "customer") {
+      throw new Error("Only business accounts can create stores");
     }
 
     const safePlan = plan ?? "free";

@@ -1,4 +1,4 @@
-// app/api/webhooks/clerk/route.ts   } catch (err) {
+// app/api/webhooks/clerk/route.ts
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
