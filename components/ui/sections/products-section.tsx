@@ -83,37 +83,50 @@ export function ProductsHeading({
    LatestProducts Component
 ----------------------------- */
 export function LatestProducts({ products }: ProductsListProps) {
-    const sorted = useSortedProducts({ products }).slice(0, 4);
-  
-    return (
-      <section className="px-6 mt-10 max-w-6xl mx-auto">
-        <ProductsHeading
-          title="Latest Products"
-          description={`Showing ${sorted.length} of ${usePreloaded(products).length} products`}
-          showFilter={false}
-        />
-        <ProductsGrid items={sorted} />
-      </section>
-    );
+  const items = usePreloaded(products);
+
+  if (items.length === 0) return null;
+
+  const sorted = useMemo(
+    () => [...items].sort((a, b) => b.createdAt - a.createdAt).slice(0, 4),
+    [items]
+  );
+
+  return (
+    <section className="px-6 mt-10 max-w-6xl mx-auto">
+      <ProductsHeading
+        title="Latest Products"
+        description={`Showing ${sorted.length} of ${items.length} products`}
+        showFilter={false}
+      />
+      <ProductsGrid items={sorted} />
+    </section>
+  );
 }
   
-  export function BestSelling({ products }: ProductsListProps) {
-    const sortedBest = useMemo(() => {
-      return [...usePreloaded(products)]
-        .sort((a, b) => (b.rating?.length ?? 0) - (a.rating?.length ?? 0))
-        .slice(0, 8);
-    }, [products]);
-  
-    return (
-      <section className="px-6 my-30 max-w-6xl mx-auto">
-        <ProductsHeading
-          title="Best Selling"
-          description={`Showing ${sortedBest.length} of ${usePreloaded(products).length} products`}
-        />
-        <ProductsGrid items={sortedBest} />
-      </section>
-    );
-}  
+export function BestSelling({ products }: ProductsListProps) {
+  const items = usePreloaded(products);
+
+  if (items.length === 0) return null;
+
+  const sortedBest = useMemo(() => {
+    return [...items]
+      .sort(
+        (a, b) => (b.ratings?.length ?? 0) - (a.ratings?.length ?? 0)
+      )
+      .slice(0, 8);
+  }, [items]);
+
+  return (
+    <section className="px-6 my-30 max-w-6xl mx-auto">
+      <ProductsHeading
+        title="Best Selling"
+        description={`Showing ${sortedBest.length} of ${items.length} products`}
+      />
+      <ProductsGrid items={sortedBest} />
+    </section>
+  );
+}
 
 /* -----------------------------
    ProductsSection Component
@@ -125,12 +138,17 @@ export function ProductsSection({
 }: ProductsListProps & { category: string; heading?: boolean }) {
   const [filterOpen, setFilterOpen] = useState(false);
 
+  const items = usePreloaded(products);
+
   const filteredProducts =
-  category.toLowerCase() === "all"
-    ? usePreloaded(products)
-    : usePreloaded(products).filter(
-        (p) => p.aiCategory?.toLowerCase() === category.toLowerCase()
-      );
+    category.toLowerCase() === "all"
+      ? items
+      : items.filter(
+          (p) => p.category?.toLowerCase() === category.toLowerCase()
+        );
+
+  // HARD EXIT — nothing renders
+  if (filteredProducts.length === 0) return null;
 
   return (
     <>

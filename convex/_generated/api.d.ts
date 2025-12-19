@@ -8,10 +8,11 @@
  * @module
  */
 
+import type * as lib_auth from "../lib/auth.js";
 import type * as products from "../products.js";
 import type * as profiles from "../profiles.js";
 import type * as store from "../store.js";
-import type * as syncing from "../syncing.js";
+import type * as types_auth from "../types/auth.js";
 import type * as video from "../video.js";
 
 import type {
@@ -21,10 +22,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "lib/auth": typeof lib_auth;
   products: typeof products;
   profiles: typeof profiles;
   store: typeof store;
-  syncing: typeof syncing;
+  "types/auth": typeof types_auth;
   video: typeof video;
 }>;
 

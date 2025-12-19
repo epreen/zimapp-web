@@ -4,10 +4,8 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
-import StoreProvider from "@/components/ui/providers/store-provider";
 import { ConvexClientProvider } from "@/components/ui/providers/client-provider";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ProfileSyncProvider } from "@/components/ui/providers/profile-syncing-provider";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -53,11 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <html lang="en" suppressHydrationWarning>
                     <body className={cn('antialiased', poppins.variable)}>
                         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                            <StoreProvider>
-                                <ProfileSyncProvider>
-                                    {children}
-                                </ProfileSyncProvider>
-                            </StoreProvider>
+                            {children}
                         </ThemeProvider>
                     </body>
                 </html>

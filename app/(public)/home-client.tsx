@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import SpecsSection from "@/components/ui/sections/specs-section";
-import NewsletterSection from "@/components/ui/sections/newsletter-section";
 import { BestSelling, LatestProducts } from "@/components/ui/sections/products-section";
 import { ourSpecsData } from "@/data/dummy/specs";
 import { PricingSection } from "@/components/ui/sections/pricing-section";
@@ -25,7 +24,6 @@ export default function HomePageClient({ products }: HomePageClientProps) {
       <BestSelling products={products} />
       <SpecsSection data={ourSpecsData} />
       <PricingSection />
-      <NewsletterSection />
     </div>
   );
 }

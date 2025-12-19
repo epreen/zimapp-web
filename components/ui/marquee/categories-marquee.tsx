@@ -11,13 +11,13 @@ export default function CategoriesMarquee() {
             <div className="absolute left-0 top-0 h-full w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
 
             <div className="flex min-w-[200%] animate-[marqueeScroll_10s_linear_infinite] sm:animate-[marqueeScroll_40s_linear_infinite] group-hover:[animation-play-state:paused] gap-4">
-                {[...categories, ...categories, ...categories, ...categories].map((item, i) => (
+                {[...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories, ...categories].map((item, i) => (
                     <Badge
                         key={i}
                         asChild
                         className="px-5 py-2 text-background dark:bg-secondary dark:hover:bg-secondary rounded-lg text-xs sm:text-sm active:scale-95 transition-all duration-300"
                     >
-                        <Link href={`/marketplace/shops/${item.slug}`}>
+                        <Link href={`#`}>
                             {item.name}
                         </Link>
                     </Badge>

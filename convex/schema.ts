@@ -6,18 +6,12 @@ import { v } from "convex/values";
 export default defineSchema({
   profiles: defineTable({
     userId: v.string(), // Clerk user ID
-    role: v.union(v.literal("buyer"), v.literal("seller")),
-    hasPlan: v.boolean(),
-    plan: v.string(),
-    subscribedSince: v.optional(v.number()),
-    verificationStatus: v.string(), // pending | verified | rejected
-    verifiedAt: v.optional(v.number()),
     preferences: v.optional(v.array(v.string())),
-    aiPersona: v.optional(v.string()),
+    persona: v.optional(v.string()),
+    about: v.optional(v.string()),
+    bio: v.optional(v.string()),
     createdAt: v.number(),
-  }).index("byUserId", ["userId"])
-    .index("byRole", ["role"])
-    .index("byCreatedAt", ["createdAt"]),
+  }).index("byUserId", ["userId"]),
 
   stores: defineTable({
     userId: v.string(),
@@ -26,8 +20,13 @@ export default defineSchema({
     logo: v.optional(v.string()),
     category: v.string(),
     isActive: v.boolean(),
-    verificationStatus: v.string(), // "pending" | "verified" | "rejected"
-    aiHealthScore: v.optional(v.number()),
+    verificationStatus: v.optional(
+      v.union(
+        v.literal("pending"),
+        v.literal("verified"),
+        v.literal("rejected")
+      )), // "pending" | "verified" | "rejected"
+    healthScore: v.optional(v.number()),
     createdAt: v.number(),
   }).index("byUserId", ["userId"])
     .index("byCategory", ["category"])
@@ -38,59 +37,68 @@ export default defineSchema({
     storeId: v.id("stores"),
     name: v.string(),
     description: v.string(),  
-    optimizedDescription: v.optional(v.string()),
+    generatedDescription: v.optional(v.string()),
     price: v.number(),
     images: v.array(v.string()),
-    aiKeywords: v.optional(v.array(v.string())),
-    aiCategory: v.optional(v.string()),
-    rating: v.optional(v.array(v.number())),
+    keywords: v.optional(v.array(v.string())),
+    category: v.optional(v.string()),
+    ratings: v.optional(
+      v.array(
+        v.object({
+          userId: v.string(),
+          score: v.number(),
+          review: v.string(),
+          timestamp: v.number(),
+        })
+      )
+    ),
     engagementScore: v.optional(v.number()),
-    moderationStatus: v.string(), // "approved" | "pending" | "rejected"
+    moderationStatus: v.optional(
+      v.union(
+        v.literal("pending"),
+        v.literal("approved"),
+        v.literal("rejected")
+      )), // "approved" | "pending" | "rejected"
     createdAt: v.number(),
   }).index("byStoreId", ["storeId"])
     .index("byModerationStatus", ["moderationStatus"])
-    .index("byPrice", ["price"])
-    .index("byCreatedAt", ["createdAt"]),
+    .index("byPrice", ["price"]),
 
   videos: defineTable({
     storeId: v.id("stores"),
     url: v.string(),
     transcript: v.optional(v.string()),
-    aiTags: v.optional(v.array(v.string())),
+    tags: v.optional(v.array(v.string())),
     engagementScore: v.optional(v.number()),
     moderationStatus: v.string(),
-    createdAt: v.number(),
+    uploadedAt: v.number(),
   }).index("byStoreId", ["storeId"])
     .index("byModerationStatus", ["moderationStatus"])
-    .index("byCreatedAt", ["createdAt"]),
-
-  ratings: defineTable({
-    productId: v.id("products"),
-    userId: v.string(),
-    rating: v.number(),
-    review: v.string(),
-    createdAt: v.number(),
-  }).index("byProductId", ["productId"])
-    .index("byUserId", ["userId"])
-    .index("byCreatedAt", ["createdAt"]),
+    .index("byUploadedAt", ["uploadedAt"]),
 
   coupons: defineTable({
     code: v.string(),
     discount: v.number(),
     description: v.string(),
     expiresAt: v.number(),
-    aiTargetAudience: v.optional(v.array(v.string())),
+    audience: v.optional(v.array(v.string())),
   }).index("byCode", ["code"])
     .index("byExpiresAt", ["expiresAt"]),
 
+  chats: defineTable({
+    createdAt: v.number(),
+    isArchived: v.boolean(),
+    deletedAt: v.optional(v.number())
+  }),
+
   messages: defineTable({
-    conversationId: v.string(),
+    chatId: v.string(),
     senderId: v.string(),
     receiverId: v.string(),
     message: v.string(),
-    isAI: v.boolean(),
+    isGenerated: v.boolean(),
     createdAt: v.number(),
-  }).index("byConversationId", ["conversationId"])
+  }).index("byChatId", ["chatId"])
     .index("bySenderId", ["senderId"])
     .index("byReceiverId", ["receiverId"])
     .index("byCreatedAt", ["createdAt"]),
@@ -100,9 +108,9 @@ export default defineSchema({
     entityId: v.string(),
     issues: v.array(v.string()),
     status: v.string(),
-    createdAt: v.number(),
+    timestamp: v.number(),
   }).index("byEntity", ["entity"])
     .index("byEntityId", ["entityId"])
     .index("byStatus", ["status"])
-    .index("byCreatedAt", ["createdAt"]),
+    .index("byTimestamp", ["timestamp"]),
 });

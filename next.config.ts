@@ -5,4 +5,10 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
 };
 
+if (process.env.NODE_ENV !== "production") {
+  import("./scripts/ngrok.js").then(({ startNgrok }) => {
+    startNgrok();
+  });
+}
+
 export default nextConfig;

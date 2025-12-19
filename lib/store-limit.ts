@@ -1,7 +1,7 @@
 // lib/store-limit.ts
-import { PlanName } from "./tier-config";
+import { Plans } from "./tier-config";
 
-export function getStoreLimit(plan: PlanName): number {
+export function getStoreLimit(plan: Plans): number {
   switch (plan) {
     case "standard":
       return 1;
@@ -10,7 +10,7 @@ export function getStoreLimit(plan: PlanName): number {
     case "business":
       return 10;
     case "enterprise":
-      return 999;
+      return 99;
     default:
       return 0;
   }

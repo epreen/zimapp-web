@@ -3,54 +3,45 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { STORE_LIMITS } from "../lib/tier-config";
+import { getRoleAndPlan } from "./lib/auth";
 
 export const create = mutation({
   args: {
-    userId: v.string(),
     name: v.string(),
     description: v.string(),
     logo: v.optional(v.string()),
     category: v.string(),
-    isActive: v.boolean(),
-    verificationStatus: v.string(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
 
-    const userProfiles = await ctx.db
-      .query("profiles")
-      .withIndex("byUserId", (q) => q.eq("userId", args.userId))
-      .collect();
+    const { role, plan } = getRoleAndPlan(identity.publicMetadata);
 
-    const sellerStores = await ctx.db
-      .query("stores")
-      .withIndex("byUserId", (q) => q.eq("userId", args.userId))
-      .collect();
-
-    const userProfile = userProfiles[0];
-    if (!userProfile) throw new Error("Profile not found.");      
-
-    const maxStores = STORE_LIMITS[userProfile.role];
-
-    if (sellerStores.length >= maxStores) {
-      throw new Error(
-        `Your account allows a maximum of ${maxStores} store(s). Upgrade to create more.`
-      );
+    if (role !== "business") {
+      throw new Error("Only business sellers can create stores");
     }
 
-    if (userProfile.role !== "seller" || !userProfile.hasPlan) {
-      throw new Error(
-        "Only verified sellers may create stores and sell their products."
-      );
+    const safePlan = plan ?? "free";
+    const maxStores = STORE_LIMITS[safePlan];
+
+    const existingStores = await ctx.db
+      .query("stores")
+      .withIndex("byUserId", q => q.eq("userId", identity.subject))
+      .collect();
+
+    if (existingStores.length >= maxStores) {
+      throw new Error(`Plan limit reached (${maxStores} stores)`);
     }
 
     return await ctx.db.insert("stores", {
-      userId: args.userId,
+      userId: identity.subject,
       name: args.name,
       description: args.description,
-      category: args.category,
       logo: args.logo,
-      isActive: args.isActive,
-      verificationStatus: args.verificationStatus,
+      category: args.category,
+      isActive: true,
+      verificationStatus: "pending",
       createdAt: Date.now(),
     });
   },
@@ -132,25 +123,5 @@ export const retrieveByCategory = query({
       numItems,
       cursor: args.paginationOpts?.cursor ?? null,
     });
-  },
-});
-
-/* -------------------------------------------------------
-   Update store info
-------------------------------------------------------- */
-export const update = mutation({
-  args: {
-    id: v.id("stores"),
-    name: v.optional(v.string()),
-    description: v.optional(v.string()),
-    logo: v.optional(v.string()),
-    category: v.optional(v.string()),
-    isActive: v.optional(v.boolean()),
-    verificationStatus: v.optional(v.string()),
-    aiHealthScore: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const { id, ...updates } = args;
-    await ctx.db.patch(id, updates);
   },
 });

@@ -24,8 +24,9 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Separator } from "../separator";
-import { getStoreLimit, canCreateStore } from "@/lib/store-limit";
-import { PlanName } from "@/lib/tier-config";
+import { useAuth } from "@clerk/nextjs";
+import { getStoreLimit } from "@/lib/store-limit";
+import { Plans } from "@/lib/tier-config";
 
 interface Store {
   _id: string;
@@ -39,24 +40,42 @@ interface ManageStoresInlineProps {
 }
 
 export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
-  // Fetch user plan from profiles table
-  const userPlanQuery = useQuery(api.profiles.retrievePlan, { userId });
+  const { has, isLoaded } = useAuth();
+
   const storesQuery = useQuery(api.store.retrieveByUser, { userId });
 
-  if (!userId)
+  if (!userId) {
     return <p className="mt-4 text-center">Please sign in to manage stores</p>;
+  }
 
-  if (!userPlanQuery || !storesQuery)
+  if (!isLoaded || !storesQuery) {
     return <p className="mt-4 text-center">Loading...</p>;
+  }
 
-  const userPlan: PlanName = (userPlanQuery.plan || "free") as PlanName;
-  const stores: Store[] = storesQuery || [];
+  const stores: Store[] = storesQuery ?? [];
 
-  const storeLimit = getStoreLimit(userPlan);
+  // ---- PLAN ACCESS (via Clerk) ----
+  let currentPlan: Plans = "free"; // default
+
+  const planAccess = {
+    free: has({ plan: "free" }),
+    standard: has({ plan: "standard" }),
+    premium: has({ plan: "premium" }),
+    business: has({ plan: "business" }),
+    enterprise: has({ plan: "enterprise" }),
+  };  
+
+  if (planAccess.standard) currentPlan = "standard";
+  else if (planAccess.premium) currentPlan = "premium";
+  else if (planAccess.business) currentPlan = "business";
+  else if (planAccess.enterprise) currentPlan = "enterprise";
+
+  const storeLimit = getStoreLimit(currentPlan);
+
   const hasAccess = storeLimit > 0;
-  const userCanCreate = canCreateStore(stores.length, storeLimit);
+  const userCanCreate = stores.length < storeLimit;
 
-  // ---- STATE 1: No subscription / restricted ----
+  // ---- STATE 1: No access ----
   if (!hasAccess) {
     return (
       <Card className="border-none p-0 m-0">
@@ -64,7 +83,7 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
           <CardTitle>Create a Store</CardTitle>
           <Separator className="bg-foreground/3 mb-10" />
           <CardDescription className="text-xs">
-            Your current plan does not allow creating a store.
+            You're currently using a free plan, please upgrade your plan to have access to the store management inventory.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -76,26 +95,23 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
     );
   }
 
-  // ---- STATE 2: Has access but owns zero stores ----
+  // ---- STATE 2: No stores yet ----
   if (stores.length === 0) {
     return (
       <Card className="border-none p-0 m-0">
         <CardHeader>
-          <CardTitle className="flex gap-2">
-            Manage Your Store{" "}
-            <span className="text-primary/10 dark:text-secondary/10 font-light">
-              --- {stores.length}
-            </span>
-          </CardTitle>
+          <CardTitle>Manage Your Store</CardTitle>
           <Separator className="bg-foreground/3 mb-10" />
           <CardDescription className="text-xs">
-            You haven’t created any stores yet.
+            You have up to {storeLimit} slot for store limits.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {userCanCreate ? (
-            <Button asChild className="text-xs w-full">
-              <Link href="/dashboard/store/create">Create your first store</Link>
+            <Button asChild className="text-xs opacity-[0.1]" disabled>
+              <Link href="#">
+                Create store
+              </Link>
             </Button>
           ) : (
             <p className="text-xs text-red-500 opacity-70 text-center">
@@ -107,11 +123,11 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
     );
   }
 
-  // ---- STATE 3: User has stores ----
+  // ---- STATE 3: Has stores ----
   return (
     <div className="p-0 m-0">
       <ItemGroup>
-        {stores.map((store: Store, index: number) => (
+        {stores.map((store, index) => (
           <React.Fragment key={store._id}>
             <Item>
               <ItemMedia>
@@ -119,7 +135,9 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
                   {store.logo ? (
                     <AvatarImage src={store.logo} />
                   ) : (
-                    <AvatarFallback>{store.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>
+                      {store.name.charAt(0)}
+                    </AvatarFallback>
                   )}
                 </Avatar>
               </ItemMedia>
@@ -131,7 +149,9 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
 
               <ItemActions>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/dashboard/store/${store._id}`}>Manage</Link>
+                  <Link href={`/dashboard/store/${store._id}`}>
+                    Manage
+                  </Link>
                 </Button>
               </ItemActions>
             </Item>
@@ -143,7 +163,9 @@ export function ManageStoresInline({ userId }: ManageStoresInlineProps) {
 
       {userCanCreate && (
         <Button className="mt-4 w-full" asChild>
-          <Link href="/dashboard/stores/create">Create another store</Link>
+          <Link href="/dashboard/stores/create">
+            Create another store
+          </Link>
         </Button>
       )}
     </div>

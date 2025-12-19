@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { put } from "@vercel/blob";
 import { Id } from "@/convex/_generated/dataModel";
 import { getStoreLimit, canCreateStore } from "@/lib/store-limit";
-import { PlanName } from "@/lib/tier-config";
+import { Plans } from "@/lib/tier-config";
 
 /* Upload validation against the user's plan */
 export async function validateUpload(
@@ -49,7 +49,7 @@ export async function createStore(
   }
 
   // Enforce plan limits
-  const maxStores = getStoreLimit(userProfile.plan as PlanName);
+  const maxStores = getStoreLimit(userProfile.plan as Plans);
   const existingStores = await convex.query(api.store.retrieveByUser, { userId });
 
   if (!canCreateStore(existingStores.length, maxStores)) {

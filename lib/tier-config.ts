@@ -1,4 +1,10 @@
-export type PlanName =
+export type Roles =
+  | "admin"
+  | "customer"
+  | "business"
+  | "verified_business"
+
+export type Plans =
   | "free"
   | "standard"
   | "premium"
@@ -58,15 +64,15 @@ export const FEATURES = {
   PRIORITY_SUPPORT: "priority_support",
 } as const;
 
-export type FeatureName = (typeof FEATURES)[keyof typeof FEATURES];
+export type Feature = (typeof FEATURES)[keyof typeof FEATURES];
 
-export interface PlanLimits {
+export interface Limits {
   maxProducts: number | null;
   maxFileSize: number; // bytes
   maxDuration: number | null; // seconds
 }
 
-export const PLAN_LIMITS: Record<PlanName, PlanLimits> = {
+export const PLAN_LIMITS: Record<Plans, Limits> = {
   free: { maxProducts: 10, maxFileSize: 50 * 1024 * 1024, maxDuration: 300 },
   standard: { maxProducts: 30, maxFileSize: 200 * 1024 * 1024, maxDuration: 600 },
   premium: { maxProducts: 60, maxFileSize: 500 * 1024 * 1024, maxDuration: 900 },
@@ -74,7 +80,7 @@ export const PLAN_LIMITS: Record<PlanName, PlanLimits> = {
   enterprise: { maxProducts: null, maxFileSize: 3 * 1024 * 1024 * 1024, maxDuration: null },
 };
 
-export const PLAN_FEATURES: Record<PlanName, FeatureName[]> = {
+export const PLAN_FEATURES: Record<Plans, Feature[]> = {
   free: [
     FEATURES.BASIC_ANALYTICS,
     FEATURES.BOOSTED_PRODUCT_SLOTS,
@@ -124,7 +130,7 @@ export const PLAN_FEATURES: Record<PlanName, FeatureName[]> = {
   ],
 };
 
-export const PLAN_NAMES: Record<PlanName, string> = {
+export const PLAN_NAMES: Record<Plans, string> = {
   free: "Basic",
   standard: "Standard",
   premium: "Premium",
@@ -133,8 +139,10 @@ export const PLAN_NAMES: Record<PlanName, string> = {
 };
 
 export const STORE_LIMITS = {
-  buyer: 0,
-  seller: 1,
-  business_seller: 3,
-  admin: Infinity,
+  free: 0,
+  standard: 1,
+  premium: 3,
+  business: 10,
+  enterprise: 99,
+  partner: Infinity,
 } as const;

@@ -1,4 +1,4 @@
-import { FeatureName } from "@/lib/tier-config";
+import { Feature } from "@/lib/tier-config";
 
 export const JOBS = {
   GENERATE_LISTING_ENHANCEMENT: "generateListingEnhancement",
@@ -17,7 +17,7 @@ export const JOBS = {
 
 export type JobName = (typeof JOBS)[keyof typeof JOBS];
 
-export const FEATURE_TO_JOB_MAP: Record<FeatureName, JobName[]> = {
+export const FEATURE_TO_JOB_MAP: Record<Feature, JobName[]> = {
   // original tier-config features
   business_verification: [JOBS.VERIFY_BUSINESS],
   video_promo_upload: [JOBS.PROCESS_VIDEO_UPLOAD],

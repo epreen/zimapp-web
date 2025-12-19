@@ -12,7 +12,7 @@ import ThemeToggle from "@/components/ui/controls/theme-toggle";
 // import { useSelector } from "react-redux";
 // import { selectCartTotal } from "@/utils/slices/cart";
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, useUser, UserButton, useAuth } from "@clerk/nextjs";
 import { ManageStoresInline } from "@/components/ui/modals/manage-stores-modal"; // inline version of ManageStores
 import { FaStore } from "react-icons/fa6";
 
@@ -86,13 +86,32 @@ const HomeNavbar = ({userId}: HomeNavbarProps) => {
                     </Link> */}
 
                     <SignedIn>
-                        <div className="relative">
-                            <UserButton>
-                                <UserButton.UserProfilePage label="Stores" url="manage-store" labelIcon={<FaStore />}>
-                                    <ManageStoresInline userId={userId} />
+                        {(() => {
+                            const { user } = useUser();
+                            if (!user) return null;
+
+                            const role = user.publicMetadata?.role as string | undefined;
+                            const plan = user.publicMetadata?.plan as string | undefined;
+
+                            const canManageStores =
+                            role !== "customer" && plan !== "free";
+
+                            return canManageStores ? (
+                            <div className="relative">
+                                <UserButton>
+                                <UserButton.UserProfilePage
+                                    label="Stores"
+                                    url="manage-store"
+                                    labelIcon={<FaStore />}
+                                >
+                                    <ManageStoresInline userId={user.id} />
                                 </UserButton.UserProfilePage>
-                            </UserButton>
-                        </div>
+                                </UserButton>
+                            </div>
+                            ) : (
+                            <UserButton />
+                            );
+                        })()}
                     </SignedIn>
 
                     <SignedOut>

@@ -5,8 +5,8 @@ import { api } from "@/convex/_generated/api";
 import {
   PLAN_FEATURES,
   PLAN_LIMITS,
-  PlanName,
-  FeatureName,
+  Plans,
+  Feature,
 } from "@/lib/tier-config";
 
 export interface UploadValidationResult {
@@ -20,7 +20,7 @@ export interface UploadValidationResult {
 /**
  * Detect plan from Clerk Auth object using auth.has().
  */
-export async function getPlanFromAuth(): Promise<PlanName> {
+export async function getPlanFromAuth(): Promise<Plans> {
   const authObj = await auth(); // await the promise
   const has = authObj?.has;
   if (!has) return "free";
@@ -36,7 +36,7 @@ export async function getPlanFromAuth(): Promise<PlanName> {
  * Check if a user has access to a feature using Clerk's feature flags (auth.has)
  * or fallback to plan mapping.
  */
-export async function checkFeatureAccess(feature: FeatureName): Promise<boolean> {
+export async function checkFeatureAccess(feature: Feature): Promise<boolean> {
   const authObj = await auth();
   const has = authObj?.has;
   if (has && has({ feature })) return true;
@@ -48,15 +48,15 @@ export async function checkFeatureAccess(feature: FeatureName): Promise<boolean>
 /**
  * Returns features available for a plan
  */
-export function getPlanFeatures(plan: PlanName): FeatureName[] {
+export function getPlanFeatures(plan: Plans): Feature[] {
   return PLAN_FEATURES[plan];
 }
 
 /**
  * Minimum plan that includes a given feature (based on the mapping)
  */
-export function getMinimumPlanForFeature(feature: FeatureName): PlanName {
-  const order: PlanName[] = ["free", "standard", "premium", "business", "enterprise"];
+export function getMinimumPlanForFeature(feature: Feature): Plans {
+  const order: Plans[] = ["free", "standard", "premium", "business", "enterprise"];
   for (const p of order) {
     if (PLAN_FEATURES[p].includes(feature)) return p;
   }
