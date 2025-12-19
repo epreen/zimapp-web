@@ -15,12 +15,13 @@ interface ProductCardProps {
 export default function ProductCard({ product, className }: ProductCardProps) {
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "MWK";
   
-    const avgRating = product.rating?.length
-      ? Math.round(
-          product.rating.reduce((acc, curr) => acc + curr, 0) /
-            product.rating.length
-        )
-      : 0;
+    const avgRating =
+      product.ratings && product.ratings.length > 0
+        ? Math.round(
+            product.ratings.reduce((sum, { score }) => sum + score, 0) /
+              product.ratings.length
+          )
+        : 0;
   
     return (
       <Link href={`/marketplace/products/${product._id}`}>
