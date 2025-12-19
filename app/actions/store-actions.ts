@@ -79,6 +79,7 @@ export async function createStore(
 
   // Create the store entry
   return convex.mutation(api.store.create, {
+    userId,
     name,
     description,
     category,

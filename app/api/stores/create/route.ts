@@ -11,11 +11,11 @@ import { inngest } from "@/inngest/client";
 
 export async function POST(req: Request) {
   try {
-    // Authenticate user
-    const { userId, has } = await auth();
+    const authObj = await auth();
+    const { userId, has } = authObj;
+
     if (!userId) return apiError("Unauthorized", 401);
 
-    // Parse request body
     const body = (await req.json()) as {
       name: string;
       description: string;
@@ -23,23 +23,19 @@ export async function POST(req: Request) {
       logo?: HandleUploadBody;
     };
 
-    // Validate required fields
     if (!body.name || !body.description || !body.category) {
-      return apiError(
-        "Missing required fields: name, description, category",
-        400
-      );
+      return apiError("Missing required fields", 400);
     }
 
-    // Determine plan-based file size limit for logo (optional)
+    // Determine plan-based upload size
     let maxFileSize = PLAN_LIMITS.free.maxFileSize;
     if (has?.({ plan: "standard" })) maxFileSize = PLAN_LIMITS.standard.maxFileSize;
     else if (has?.({ plan: "premium" })) maxFileSize = PLAN_LIMITS.premium.maxFileSize;
     else if (has?.({ plan: "business" })) maxFileSize = PLAN_LIMITS.business.maxFileSize;
     else if (has?.({ plan: "enterprise" })) maxFileSize = PLAN_LIMITS.enterprise.maxFileSize;
 
-    // Upload logo if provided
     let logoUrl: string | undefined;
+
     if (body.logo) {
       await handleUpload({
         body: body.logo,
@@ -55,32 +51,32 @@ export async function POST(req: Request) {
       });
     }
 
-    // Insert store into Convex
-    const storeData = {
-      userId: userId, // cast to Convex Id
+    // ✅ Send only what Convex expects
+    const storeId = await convex.mutation(api.store.create, {
+      userId,
       name: body.name,
       description: body.description,
       category: body.category,
       logo: logoUrl,
       isActive: true,
-      verificationStatus: "pending",
-      createdAt: Date.now(),
-    };
+      verificationStatus: "pending" as const,
+    });
 
-    const storeId = await convex.mutation(api.store.create, storeData);
-
-    // Emit Inngest event
     await inngest.send({
       name: "store.created",
       data: {
         storeId,
-        ...storeData,
+        userId,
+        name: body.name,
       },
     });
 
     return NextResponse.json({ status: "success", storeId });
   } catch (error) {
     console.error("Error creating store:", error);
-    return apiError(error instanceof Error ? error.message : "Failed to create store", 500);
+    return apiError(
+      error instanceof Error ? error.message : "Failed to create store",
+      500
+    );
   }
 }

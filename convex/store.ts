@@ -7,6 +7,7 @@ import { getRoleAndPlan } from "./lib/auth";
 
 export const create = mutation({
   args: {
+    userId: v.string(),
     name: v.string(),
     description: v.string(),
     category: v.string(),
@@ -43,7 +44,7 @@ export const create = mutation({
     }
 
     return await ctx.db.insert("stores", {
-      userId: identity.subject,
+      userId: args.userId,
       name: args.name,
       description: args.description,
       logo: args.logo,
