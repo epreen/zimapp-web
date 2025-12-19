@@ -20,8 +20,8 @@ export const enhanceProduct = inngest.createFunction(
 
     convex.mutation(api.products.update, {
       id: product.id,
-      optimizedDescription: optimized.description,
-      aiCategory: category,
+      generatedDescription: optimized.description,
+      category: category,
     });    
   }
 );

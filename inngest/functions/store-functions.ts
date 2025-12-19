@@ -25,15 +25,6 @@ export const storeMetadataFn = inngest.createFunction(
       return response;
     });
 
-    // Update store
-    await step.run("update store ai metadata", async () => {
-      await convex.mutation(api.store.update, {
-        id: storeId,
-        aiHealthScore: metadata?.engagementScore ?? 0.5,
-        verificationStatus: "pending", // you can change this logic
-      });
-    });
-
     return { status: "done", metadata };
   }
 );
