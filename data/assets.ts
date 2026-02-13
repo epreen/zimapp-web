@@ -3,11 +3,13 @@ import hero_model_img from "@/public/images/assets/hero_model_img.png"
 import hero_product_img1 from "@/public/images/assets/hero_product_img1.png"
 import hero_product_img2 from "@/public/images/assets/hero_product_img2.png"
 import gs_logo from "@/public/images/stores/gs_logo.jpg"
+import local_store from "@/public/images/assets/local-store.png"
 
 export const assets = {
     upload_area,
     hero_model_img,
     hero_product_img1,
     hero_product_img2,
-    gs_logo
+    gs_logo,
+    local_store
 }

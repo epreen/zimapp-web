@@ -28,3 +28,31 @@ export const storeMetadataFn = inngest.createFunction(
     return { status: "done", metadata };
   }
 );
+
+export const generateStoreDescriptionFn = inngest.createFunction(
+  { id: "store.generate.description" },
+  { event: "store/description.generate" },
+  async ({ event, step }) => {
+    const { storeId, category, offerings, targetAudience, tone } = event.data;
+
+    const aiResult = await step.run("generate ai description", async () => {
+      return openai.generateStoreDescription({
+        category,
+        offerings,
+        targetAudience,
+        tone,
+      });
+    });
+
+    await step.run("update store", async () => {
+      await convex.mutation(api.store.update, {
+        id: storeId,
+        description: aiResult.description,
+        keywords: aiResult.keywords,
+        category: aiResult.category,
+      });
+    });
+
+    return { status: "done" };
+  }
+);

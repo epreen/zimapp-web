@@ -1,67 +1,142 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { StarIcon } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import type { Doc } from "@/convex/_generated/dataModel";
+
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn, formatPrice } from "@/lib/utils";
+
+import { AddToCartButton } from "../buttons/add-to-cart-button";
+import { StockBadge } from "../badges/stock-badge";
+import { Skeleton } from "@/components/ui/skeleton"; // import shadcn Skeleton
+import { Product } from "@/sanity.types";
+import { urlFor } from "@/sanity/lib/image";
+
+/* =====================================================
+   Types (Aligned with FILTERED_PRODUCT_PROJECTION)
+===================================================== */
 
 interface ProductCardProps {
-    product: Doc<"products">;
-    className?: string;
+  product: Product;
+  className?: string;
 }
 
-export default function ProductCard({ product, className }: ProductCardProps) {
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "MWK";
-  
-    const avgRating =
-      product.ratings && product.ratings.length > 0
-        ? Math.round(
-            product.ratings.reduce((sum, { score }) => sum + score, 0) /
-              product.ratings.length
-          )
-        : 0;
-  
-    return (
-      <Link href={`/marketplace/products/${product._id}`}>
-        <motion.div
-          whileHover={{ scale: 1.03 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        >
-          <Card
-            className={`bg-background border-none shadow-none group max-xl:mx-auto overflow-hidden ${className}`}
-          >
-            <CardHeader className="bg-foreground/5 h-40 sm:w-60 sm:h-68 rounded-lg flex items-center justify-center">
+/* =====================================================
+   Component
+===================================================== */
+
+export function ProductCard({ product, className }: ProductCardProps) {
+  const stock = product.stock ?? 0;
+  const isOutOfStock = stock <= 0;
+
+  const imageUrl = product.images?.[0]?.asset
+    ? urlFor(product.images[0].asset).url()
+    : undefined;
+
+  const hasSlug = Boolean(product.slug?.current);
+
+  const price = product.price || 0;
+  const rate = product.discount;
+
+  const discount = rate && price ? (rate * price) / 100 : 0;
+
+  const currentPrice = price - discount;
+
+  return (
+    <Card
+      className={cn(
+        "group relative overflow-hidden border-none bg-background shadow-none",
+        className,
+      )}
+    >
+      {/* =====================
+         Image
+      ===================== */}
+      {hasSlug ? (
+        <Link href={`/products/${product.slug!.current}`} className="block">
+          <div className="relative aspect-square overflow-hidden bg-linear-to-br from-background to-white dark:from-black dark:to-background">
+            {imageUrl ? (
               <Image
-                src={product.images?.[0]}
-                alt={product.name}
-                width={500}
-                height={500}
-                className="max-h-30 sm:max-h-40 w-auto group-hover:scale-115 transition duration-300"
+                src={imageUrl}
+                alt={"Product"}
+                fill
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
               />
-            </CardHeader>
-            <CardContent className="flex justify-between text-sm p-0 max-w-60 w-full">
-              <div className="w-full overflow-hidden">
-                <p className="truncate">{product.name}</p>
-                <div className="flex mt-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <StarIcon
-                      key={i}
-                      size={16}
-                      className="text-transparent"
-                      fill={avgRating >= i + 1 ? "#79F018" : "#D1D5DB"}
-                    />
-                  ))}
-                </div>
-              </div>
-              <p className="w-full text-end">
-                {currency}
-                {product.price}
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </Link>
-    );
-  }
+            ) : (
+              <Skeleton className="h-full w-full" />
+            )}
+
+            {/* Soft contrast overlay */}
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+            {/* Stock / Status */}
+            <div className="absolute right-3 top-3">
+              {isOutOfStock ? (
+                <Badge
+                  variant="destructive"
+                  className="rounded-full bg-black/50 px-3 py-1 text-xs text-white"
+                >
+                  Out of stock
+                </Badge>
+              ) : (
+                <StockBadge productId={product._id} stock={stock} />
+              )}
+            </div>
+
+            {/* Category */}
+            {product.categories?.length ? (
+              <span className="absolute left-3 top-3 rounded-full bg-white/60 px-3 py-1 text-xs font-medium text-black/80 backdrop-blur">
+                {product.categories[0]._ref}
+              </span>
+            ) : null}
+          </div>
+        </Link>
+      ) : (
+        <div className="relative aspect-square overflow-hidden">
+          <Skeleton className="h-full w-full" />
+        </div>
+      )}
+
+      {/* =====================
+         Content
+      ===================== */}
+      <CardContent className="flex items-start justify-between gap-3 px-0 pt-3 text-sm">
+        {hasSlug ? (
+          <Link href={`/products/${product.slug!.current}`} className="min-w-0 flex-1">
+            <p className="truncate font-medium text-foreground">
+              {product.name}
+            </p>
+          </Link>
+        ) : (
+          <Skeleton className="h-4 w-3/4" />
+        )}
+
+        <p className="shrink-0 font-semibold text-foreground">
+          {formatPrice(currentPrice)}
+        </p>
+      </CardContent>
+
+      {/* =====================
+         Actions
+      ===================== */}
+      <CardFooter className="px-0 pt-2">
+        {currentPrice != null ? (
+          <AddToCartButton
+            productId={product._id}
+            name={product.name ?? "Unnamed product"}
+            price={currentPrice}
+            image={imageUrl}
+            slug={product?.slug}
+            stock={stock}
+          />
+        ) : (
+          <span className="text-sm font-medium text-secondary">
+            Negotiable
+          </span>
+        )}
+      </CardFooter>
+    </Card>
+  );
+}

@@ -1,32 +1,66 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifySessionCookie } from "@/lib/firebase-admin";
+import { getSanityUserByFirebaseId } from "@/lib/firebase-admin";
 import { Roles } from "@/lib/tier-config";
 
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/api/payment(.*)",
-  "/admin(.*)",
-]);
+const PROTECTED_ROUTES = [
+  "/dashboard",
+  "/api/payment",
+  "/admin",
+];
 
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+function isProtectedRoute(pathname: string) {
+  return PROTECTED_ROUTES.some((route) =>
+    pathname.startsWith(route)
+  );
+}
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    await auth.protect();
+function isAdminRoute(pathname: string) {
+  return pathname.startsWith("/admin");
+}
+
+export async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  if (!isProtectedRoute(pathname)) {
+    return NextResponse.next();
   }
 
-  const { sessionClaims } = await auth();
+  const sessionCookie = req.cookies.get("session")?.value;
 
-  const role = sessionClaims?.metadata?.role as Roles | undefined;
-
-  if (isAdminRoute(req) && role !== "admin") {
-    return NextResponse.redirect(new URL("/", req.url));
+  if (!sessionCookie) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
   }
-});
+
+  try {
+    // 1. Verify Firebase session
+    const decoded = await verifySessionCookie(sessionCookie);
+    const firebaseUid = decoded.uid;
+
+    // 2. Fetch Sanity user
+    const sanityUser = await getSanityUserByFirebaseId(firebaseUid);
+
+    if (!sanityUser) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    const role = sanityUser.role as Roles | undefined;
+
+    // 3. Admin gate
+    if (isAdminRoute(pathname) && role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    return NextResponse.next();
+  } catch (err) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
+}
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
+    "/dashboard/:path*",
+    "/admin/:path*",
+    "/api/payment/:path*",
   ],
 };

@@ -3,6 +3,7 @@
 import OpenAI from "openai";
 import { CohereClient } from "cohere-ai";
 import { AssemblyAI } from "assemblyai";
+import { AiStoreDescriptionSchema, StoreDescriptionGenerationInput } from "@/schemas/zod-schemas";
 
 // -------------------------
 // ASSEMBLY AI
@@ -77,6 +78,37 @@ export const openai = {
         const json = response.output_text;
         return JSON.parse(json); // expect { description, keywords, category }
     },
+
+    async analyzeStoreConcept(input: {
+        name: string;
+        keywords: string[];
+      }) {
+        const response = await openaiClient.responses.create({
+          model: "gpt-4.1-mini",
+          input: `
+      You are an expert marketplace classifier and brand strategist.
+      
+      Analyze the following store signals:
+      Store Name: ${input.name}
+      Keywords: ${input.keywords.join(", ")}
+      
+      Your tasks:
+      1. Infer the most appropriate store category
+      2. Generate a clear, trustworthy, SEO-friendly store description
+      3. Return the refined keyword set
+      
+      Return ONLY valid JSON:
+      {
+        "category": string,
+        "description": string,
+        "keywords": string[]
+      }
+      `,
+        });
+      
+        const parsed = JSON.parse(response.output_text);
+        return AiStoreDescriptionSchema.parse(parsed);
+    }      
 };
 
 // -------------------------

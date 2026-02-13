@@ -8,7 +8,7 @@
  */
 import bytes from "bytes";
 import { format } from "date-fns";
-import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from "@/lib/constants/media-upload";
 
 /**
  * Format file size in human-readable format

@@ -84,37 +84,28 @@
    Dark Theme
 --------------------------------------------- */
 .dark {
-    --radial-gradient-hue: 50; /* golden-yellow tone */
+    --hue-brand: 50; /* golden-yellow tone */
+    --hue-secondary: 278; /* navy-indigo tone */
 
-    --background: hsl(var(--hue-brand) 30% 10%);
-    --foreground: hsl(var(--hue-brand) 50% 98%);
-    --card: hsl(var(--hue-brand) 10% 15%);
-    --card-foreground: hsl(var(--hue-brand) 10% 98%);
-    --popover: hsl(var(--hue-brand) 10% 15%);
-    --popover-foreground: hsl(var(--hue-brand) 10% 98%);
-
-    /* Brand & Secondary for Dark Mode */
-    --primary: hsl(var(--hue-brand) 100% 70%);
-    --billing-primary: hsl(var(--hue-secondary) 95% 65%);
-    --primary-foreground: hsl(var(--hue-brand) 50% 10%);
-    --secondary: hsl(var(--hue-secondary) 95% 65%);
-    --secondary-foreground: hsl(var(--hue-secondary) 50% 10%);
-    --accent: hsl(var(--hue-accent) 50% 65%);
-    --accent-foreground: hsl(var(--hue-brand) 0% 10%);
-
-    /* System */
-    --muted: hsl(var(--hue-brand) 0% 20%);
-    --muted-foreground: hsl(var(--hue-brand) 0% 70%);
-    --destructive: hsl(10 80% 55%);
-    --border: hsl(var(--hue-brand) 0% 30%);
-    --input: hsl(var(--hue-brand) 0% 25%);
-    --ring: hsl(var(--hue-brand) 45% 70%);
-    --sidebar: hsl(var(--hue-brand) 0% 15%);
-    --sidebar-foreground: hsl(var(--hue-brand) 0% 98%);
-    --sidebar-primary: hsl(var(--hue-brand) 35% 65%);
-    --sidebar-primary-foreground: hsl(var(--hue-brand) 0% 98%);
-    --sidebar-accent: hsl(var(--hue-secondary) 90% 60%);
-    --sidebar-accent-foreground: hsl(var(--hue-brand) 0% 10%);
+    /* UI SYSTEM */
+    --background: hsl(var(--hue-secondary) 10% 14%);
+    --foreground: hsl(var(--hue-secondary) 50% 95%);
+    --card: hsl(var(--hue-secondary) 100% 10%);
+    --card-foreground: hsl(var(--hue-secondary) 0% 90%);
+    --popover: hsl(var(--hue-secondary) 0% 10%);
+    --popover-foreground: hsl(var(--hue-secondary) 0% 90%);
+    --muted: hsl(var(--hue-secondary) 0% 8%);
+    --muted-foreground: hsl(var(--hue-secondary) 0% 65%);
+    --destructive: hsl(0 80% 45%);
+    --border: hsl(var(--hue-brand) 0% 15%);
+    --input: hsl(var(--hue-brand) 0% 10%);
+    --ring: hsl(var(--hue-brand) 35% 82%);
+    --sidebar: hsl(var(--hue-brand) 0% 8%);
+    --sidebar-foreground: hsl(var(--hue-brand) 0% 90%);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: hsl(var(--hue-brand) 0% 8%);
+    --sidebar-accent: var(--secondary);
+    --sidebar-accent-foreground: hsl(var(--hue-brand) 0% 85%);
 }
 
 /* --------------------------------------------
@@ -122,7 +113,7 @@
 --------------------------------------------- */
 @layer base {
     * {
-        @apply border-border outline-ring/50;
+        @apply border-border;
     }
 
     body {
@@ -132,22 +123,31 @@
     }
 
     a {
-        @apply text-primary hover:text-secondary transition-colors duration-300;
+        @apply text-foreground/80 hover:text-primary/60 transition-colors duration-300;
+    }
+
+    button {
+      @apply cursor-pointer;
     }
 }
 
 * {
     box-sizing: border-box;
     outline: 0;
+    -ms-overflow-style: none;  /* IE 10+ / legacy Edge - hide scrollbar */
+    scrollbar-width: none;     /* Firefox - hide scrollbar */
 }
 
 @layer components {
+    /* Cross-browser keyframes: unprefixed + -webkit- for older Safari */
     @keyframes marqueeScroll {
         0% {
             transform: translateX(0%);
+            -webkit-transform: translateX(0%);
         }
         100% {
             transform: translateX(-50%);
+            -webkit-transform: translateX(-50%);
         }
     }
 
@@ -157,6 +157,7 @@
 }
 
 
+/* Cross-browser scrollbar hiding: WebKit (Chrome, Safari, Edge), Firefox, IE/Edge */
 *::-webkit-scrollbar {
     display: none;
 }
@@ -165,35 +166,161 @@
     display: none;
 }
 
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Cross-browser column/page break: standard + WebKit + legacy */
 .break-inside-avoid {
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
+    -moz-column-break-inside: avoid;
 }
 
 /* Mesh Background Pattern */
 .mesh-background {
     background-color: var(--background);
     background-image:
-      radial-gradient(at 40% 20%, hsla(var(--radial-gradient-hue), 100%, 90%, 0.5) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsla(var(--radial-gradient-hue), 100%, 80%, 0.5) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsla(var(--radial-gradient-hue), 100%, 67%, 0.3) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, hsla(var(--radial-gradient-hue), 100%, 52%, 0.3) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsla(var(--radial-gradient-hue), 100%, 39%, 0.2) 0px, transparent 50%),
-      radial-gradient(at 80% 100%, hsla(var(--radial-gradient-hue), 100%, 50%, 0.3) 0px, transparent 50%);
-  }
+        radial-gradient(at 40% 20%, hsla(var(--radial-gradient-hue), 100%, 90%, 0.5) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, hsla(var(--radial-gradient-hue), 100%, 80%, 0.5) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, hsla(var(--radial-gradient-hue), 100%, 67%, 0.3) 0px, transparent 50%),
+        radial-gradient(at 80% 50%, hsla(var(--radial-gradient-hue), 100%, 52%, 0.3) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(var(--radial-gradient-hue), 100%, 39%, 0.2) 0px, transparent 50%),
+        radial-gradient(at 80% 100%, hsla(var(--radial-gradient-hue), 100%, 50%, 0.3) 0px, transparent 50%);
+}
   
-  .mesh-background-subtle {
+.mesh-background-subtle {
     background:
-      radial-gradient(
-        circle at 20% 30%,
-        hsla(var(--radial-gradient-hue), 100%, 39%, 0.05) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 70%,
-        hsla(var(--radial-gradient-hue), 100%, 50%, 0.05) 0%,
-        transparent 50%
-      );
+        radial-gradient(
+            circle at 20% 30%,
+            hsla(var(--radial-gradient-hue), 100%, 39%, 0.05) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            hsla(var(--radial-gradient-hue), 100%, 50%, 0.05) 0%,
+            transparent 50%
+        );
+}
+  
+/* Shimmer animation for skeleton loading */
+@keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
   
+  /* Banner Animation Keyframes */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+  
+  /* Banner Animation Classes */
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  .animate-shimmer {
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  /* Animation Delays */
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+  
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+  
+  .delay-600 {
+    animation-delay: 0.6s;
+  }
+  
+  .delay-800 {
+    animation-delay: 0.8s;
+  }
+  
+  /* Search Modal Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  @keyframes scaleOut {
+    from {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+  
+  .animate-fadeOut {
+    animation: fadeOut 0.2s ease-in forwards;
+  }
+  
+  .animate-scaleIn {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+  
+  .animate-scaleOut {
+    animation: scaleOut 0.2s ease-in forwards;
+  }
