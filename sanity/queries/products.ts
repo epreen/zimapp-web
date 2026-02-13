@@ -499,5 +499,9 @@ export const AI_SEARCH_PRODUCTS_QUERY = defineQuery(`*[
     "slug": slug.current
   },
   stock,
-  featured
+  featured,
+  material,
+  color,
+  dimensions,
+  assemblyRequired
 }`);

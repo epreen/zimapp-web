@@ -1820,6 +1820,10 @@ export type AI_SEARCH_PRODUCTS_QUERYResult = Array<{
   } | null;
   stock: number | null;
   featured: null;
+  material: string | null;
+  color: string | null;
+  dimensions: string | null;
+  assemblyRequired: boolean | null;
 }>;
 
 // Source: ./sanity/queries/stats.ts
