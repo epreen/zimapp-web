@@ -44,7 +44,7 @@ const NewsletterForm = () => {
                 body: JSON.stringify({ email: email.trim().toLowerCase() }),
             });
 
-            const data = response.json();
+            const data = await response.json();
 
             if (response.ok) {
                 setMessage({
