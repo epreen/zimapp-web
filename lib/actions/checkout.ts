@@ -2,7 +2,7 @@
 
 import { client } from "@/sanity/lib/client";
 import { PRODUCTS_BY_IDS_QUERY } from "@/sanity/queries/products";
-import { paychangu } from "@/lib/paychangu";
+import { getPaychangu } from "@/lib/paychangu";
 import { getCurrentUser } from "@/lib/firebase-admin";
 
 interface CartItem {
@@ -76,7 +76,7 @@ export async function createPayChanguPayment(items: CartItem[]) {
       process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
     // Initialize PayChangu payment
-    const response = await paychangu.initialize({
+    const response = await getPaychangu().initialize({
       amount: totalAmount,
       currency: "MWK",
       email: user.email || "",

@@ -1,11 +1,11 @@
 // lib/actions/verify-payment.ts
 "use server";
 
-import { paychangu } from "@/lib/paychangu";
+import { getPaychangu } from "@/lib/paychangu";
 
 export async function verifyPayChanguPayment(txRef: string) {
   try {
-    const verification = await paychangu.transaction.verify(txRef);
+    const verification = await getPaychangu().transaction.verify(txRef);
 
     if (verification.data.status !== "success") {
       return { success: false };
