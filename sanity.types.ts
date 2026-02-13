@@ -1329,7 +1329,13 @@ export type ALL_CATEGORIES_QUERYResult = Array<{
   _id: string;
   title: string | null;
   slug: string | null;
-  image: null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+    hotspot?: SanityImageHotspot | null;
+  } | null;
 }>;
 // Variable: CATEGORY_BY_SLUG_QUERY
 // Query: *[  _type == "category"  && slug.current == $slug][0] {  _id,  title,  "slug": slug.current,  "image": image{    asset->{      _id,      url    },    hotspot  }}
@@ -1337,7 +1343,13 @@ export type CATEGORY_BY_SLUG_QUERYResult = {
   _id: string;
   title: string | null;
   slug: string | null;
-  image: null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+    hotspot?: SanityImageHotspot | null;
+  } | null;
 } | null;
 
 // Source: ./sanity/queries/customers.ts
