@@ -230,9 +230,9 @@ function FeaturedProductSlide({
 
       {/* Content */}
       <div className="flex w-full flex-col justify-center px-6 py-8 md:w-2/5 md:px-10 lg:px-16">
-        {product.category && (
+        {product.categories?.[0] && (
           <Badge className="mb-4 hidden w-fit bg-yellow-300/10 px-4 py-1 text-yellow-300 md:block">
-            {product.category.title}
+            {product.categories[0].title}
           </Badge>
         )}
 
