@@ -11,10 +11,14 @@ export const LATEST_BLOG_QUERY = defineQuery(
   
 export const GET_ALL_BLOG = defineQuery(
     `*[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{
-            ...,  
+            ...,
+            author->{
+                name,
+                image,
+            },
             blogcategories[]->{
-            title
-        }
+                title
+            }
       }
     `
 );

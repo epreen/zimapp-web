@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { urlFor } from "@/sanity/lib/image";
-import { SINGLE_BLOG_QUERYResult } from "@/sanity.types";
+import { GET_ALL_BLOGResult, SINGLE_BLOG_QUERYResult } from "@/sanity.types";
 import { ArrowRight, Calendar, Clock, Eye } from "lucide-react";
 import dayjs from "dayjs";
 import { Separator } from "../separator";
@@ -15,15 +15,18 @@ import { Separator } from "../separator";
    Types (Aligned with FILTERED_blog_PROJECTION)
 ===================================================== */
 
+type BlogCardBlog = GET_ALL_BLOGResult[number] | NonNullable<SINGLE_BLOG_QUERYResult>;
+
 interface BlogCardProps {
-  blog: SINGLE_BLOG_QUERYResult;
+  blog: BlogCardBlog;
+  style?: React.CSSProperties;
 }
 
 /* =====================================================
    Component
 ===================================================== */
 
-export function BlogCard({ blog }: BlogCardProps) {
+export function BlogCard({ blog, style }: BlogCardProps) {
   const calculateReadingTime = (title: string) => {
     const wordsPerMinute = 200;
     const wordCount = title.split(" ").length * 20; // Estimate based on title
@@ -31,7 +34,7 @@ export function BlogCard({ blog }: BlogCardProps) {
   };
 
   const extractDescription = (
-    body: SINGLE_BLOG_QUERYResult[0]["body"],
+    body: BlogCardBlog["body"],
     maxLength: number = 150
   ) => {
     if (!body || !Array.isArray(body))
@@ -60,6 +63,7 @@ export function BlogCard({ blog }: BlogCardProps) {
   return (
     <Card
       className="group bg-background/10 transition-all duration-300 hover:-translate-y-2 overflow-hidden border-0 rounded-none pt-0"
+      style={style}
     >
       {blog?.mainImage && (
         <div className="relative overflow-hidden aspect-16/10">

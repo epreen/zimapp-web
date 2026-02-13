@@ -1,9 +1,10 @@
 import { unstable_cache } from "next/cache";
 import { sanityFetch } from "../lib/live";
 import { BLOG_CATEGORIES, GET_ALL_BLOG, LATEST_BLOG_QUERY, OTHERS_BLOG_QUERY, SINGLE_BLOG_QUERY } from "../queries/blogs";
+import type { GET_ALL_BLOGResult } from "@/sanity.types";
 
 const getAllBlogs = unstable_cache(
-    async (quantity: number) => {
+    async (quantity: number): Promise<GET_ALL_BLOGResult> => {
       try {
         const { data } = await sanityFetch({
           query: GET_ALL_BLOG,

@@ -1183,7 +1183,7 @@ export type LATEST_BLOG_QUERYResult = Array<{
   body?: BlockContent;
 }>;
 // Variable: GET_ALL_BLOG
-// Query: *[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{            ...,              blogcategories[]->{            title        }      }
+// Query: *[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{            ...,            author->{                name,                image,            },            blogcategories[]->{                title            }      }
 export type GET_ALL_BLOGResult = Array<{
   _id: string;
   _type: "blog";
@@ -1192,12 +1192,21 @@ export type GET_ALL_BLOGResult = Array<{
   _rev: string;
   title?: string;
   slug?: Slug;
-  author?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "author";
-  };
+  author: {
+    name: string | null;
+    image: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
   mainImage?: {
     asset?: {
       _ref: string;
@@ -1931,7 +1940,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "\n    *[_type == \"banner\"] | order(_createdAt desc) {\n      _id,\n      title,\n      buttonTitle,\n      buttonHref,\n      image {\n        asset->{\n          url\n        }\n      }\n    }\n": BANNERS_QUERYResult;
     " *[_type == 'blog' && isLatest == true]|order(name asc){\n            ...,\n            blogcategories[]->{\n            title\n        }\n    }": LATEST_BLOG_QUERYResult;
-    "*[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{\n            ...,  \n            blogcategories[]->{\n            title\n        }\n      }\n    ": GET_ALL_BLOGResult;
+    "*[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{\n            ...,\n            author->{\n                name,\n                image,\n            },\n            blogcategories[]->{\n                title\n            }\n      }\n    ": GET_ALL_BLOGResult;
     "*[_type == \"blog\" && slug.current == $slug][0]{\n        ..., \n        author->{\n        name,\n        image,\n    },\n    blogcategories[]->{\n        title,\n        \"slug\": slug.current,\n    },\n}": SINGLE_BLOG_QUERYResult;
     "*[_type == \"blog\"]{\n            blogcategories[]->{\n            ...\n        }\n    }": BLOG_CATEGORIESResult;
     "*[\n    _type == \"blog\"\n    && defined(slug.current)\n    && slug.current != $slug\n    ]|order(publishedAt desc)[0...$quantity]{\n        _id,\n        publishedAt,\n        title,\n        mainImage,\n        slug,\n        author->{\n            name,\n            image,\n        },\n        categories[]->{\n            title,\n            \"slug\": slug.current,\n        }\n}": OTHERS_BLOG_QUERYResult;
