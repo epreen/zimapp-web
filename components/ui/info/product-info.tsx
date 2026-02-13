@@ -84,7 +84,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           productId={product._id}
           name={product.name ?? ""}
           price={product.price ?? 0}
-          image={imageUrl}
+          image={imageUrl ?? undefined}
           stock={product.stock ?? 0}
         />
 
