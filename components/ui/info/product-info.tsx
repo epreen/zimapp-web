@@ -12,39 +12,14 @@ import {
   UserIcon,
   PackageIcon,
 } from "lucide-react";
+import type { PRODUCT_BY_SLUG_QUERYResult } from "@/sanity.types";
 
 /* =====================================================
-   Type (Aligned with PRODUCT_BY_SLUG_QUERY)
+   Type from Sanity PRODUCT_BY_SLUG_QUERY (fields can be null)
 ===================================================== */
 
-type ProductBySlug = {
-  _id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  price: number;
-  stock: number;
-
-  images: {
-    _key: string;
-    asset?: { _id: string; url: string };
-  }[];
-
-  categories: {
-    _id: string;
-    title: string;
-    slug: string;
-  }[];
-
-  store?: {
-    _id: string;
-    name: string;
-    username: string;
-  };
-};
-
 interface ProductInfoProps {
-  product: ProductBySlug;
+  product: NonNullable<PRODUCT_BY_SLUG_QUERYResult>;
 }
 
 /* =====================================================
@@ -73,7 +48,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
          Title
       ===================== */}
       <h1 className="text-2xl font-bold leading-tight text-zinc-900 dark:text-zinc-100">
-        {product.name}
+        {product.name ?? "Product"}
       </h1>
 
       {/* =====================
@@ -81,10 +56,10 @@ export function ProductInfo({ product }: ProductInfoProps) {
       ===================== */}
       <div className="flex items-center justify-between gap-4">
         <p className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          {formatPrice(product.price)}
+          {formatPrice(product.price ?? 0)}
         </p>
 
-        <StockBadge productId={product._id} stock={product.stock} />
+        <StockBadge productId={product._id} stock={product.stock ?? 0} />
       </div>
 
       {/* =====================
@@ -107,13 +82,13 @@ export function ProductInfo({ product }: ProductInfoProps) {
       <div className="flex flex-col gap-3">
         <AddToCartButton
           productId={product._id}
-          name={product.name}
-          price={product.price}
+          name={product.name ?? ""}
+          price={product.price ?? 0}
           image={imageUrl}
-          stock={product.stock}
+          stock={product.stock ?? 0}
         />
 
-        <AskAISimilarButton productName={product.name} />
+        <AskAISimilarButton productName={product.name ?? ""} />
       </div>
 
       {/* =====================

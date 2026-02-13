@@ -10,8 +10,8 @@ import { formatPrice, formatDate, formatOrderNumber } from "@/lib/utils";
 import { StackedProductImages } from "@/components/ui/images/stacked-product-images";
 
 export const metadata = {
-  title: "Your Orders | Furniture Shop",
-  description: "View your order history",
+  title: "Your Orders | ZiMAPP - Premium Online Shopping",
+  description: "View your order history | ZiMAPP - Premium Online Shopping",
 };
 
 export default async function OrdersPage() {

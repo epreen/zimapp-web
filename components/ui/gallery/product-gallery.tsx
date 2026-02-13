@@ -4,10 +4,11 @@ import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-// Type definition for product images based on PRODUCT_BY_SLUG_QUERY
+// Type definition for product images based on PRODUCT_BY_SLUG_QUERY (url can be null from Sanity)
 type ProductImage = {
-  _key: string;
-  asset?: { _id: string; url: string } | null;
+  _key?: string;
+  _id?: string;
+  asset?: { _id: string; url: string | null } | null;
   hotspot?: unknown;
 };
 
@@ -40,7 +41,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
           <div className="flex sm:flex-col gap-3">
             {images.map((image, index) => (
               <button
-                key={image._key}
+                key={image._key ?? image._id ?? index}
                 type="button"
                 onClick={() => setSelectedIndex(index)}
                 aria-label={`View image ${index + 1}`}
