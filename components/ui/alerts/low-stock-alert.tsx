@@ -40,6 +40,7 @@ function LowStockProductRow(handle: DocumentHandle) {
   });
 
   if (!data) return null;
+  if (!store?.slug) return null;
 
   const isOutOfStock = data.stock === 0;
 
@@ -101,7 +102,7 @@ function LowStockAlertContent() {
       && stock <= 5
     `,
     params: {
-      storeId: store._id,
+      storeId: store?._id ?? "",
     },
     orderings: [{ field: "stock", direction: "asc" }],
     batchSize: 10,
@@ -131,7 +132,7 @@ function LowStockAlertContent() {
         </Suspense>
       ))}
 
-      {lowStockProducts.length > 5 && (
+      {lowStockProducts.length > 5 && store?.slug && (
         <Link
           href={`/studio/store/${store.slug}/inventory?filter=low-stock`}
           className="block text-center text-sm text-foreground/60 hover:text-foreground/80"
